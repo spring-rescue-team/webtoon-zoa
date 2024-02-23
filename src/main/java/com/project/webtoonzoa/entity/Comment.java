@@ -42,4 +42,12 @@ public class Comment extends TimeStamped{
         this.user = user;
         this.webtoon = webtoon;
     }
+
+    public void update(CommentRequestDto requestDto) {
+        this.content = requestDto.getContent();
+    }
+
+    public void softDelete() {
+        this.deletedAt = LocalDateTime.now();
+    }
 }

@@ -1,10 +1,10 @@
 package com.project.webtoonzoa.dto.request;
 
 import lombok.Getter;
+import lombok.Setter;
 
-@Getter
+@Getter @Setter
 public class CommentRequestDto {
 
-    private Long webtoonId;
     private String content;
 }
