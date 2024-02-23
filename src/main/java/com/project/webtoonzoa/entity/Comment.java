@@ -1,5 +1,6 @@
 package com.project.webtoonzoa.entity;
 
+import com.project.webtoonzoa.dto.request.CommentRequestDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -35,4 +36,10 @@ public class Comment extends TimeStamped{
 
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
+
+    public Comment(CommentRequestDto requestDto, User user, Webtoon webtoon) {
+        this.content = requestDto.getContent();
+        this.user = user;
+        this.webtoon = webtoon;
+    }
 }
