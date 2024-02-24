@@ -36,7 +36,7 @@ public class UserService {
     }
 
     private UserRoleEnum validateAdminToken(UserRequestDto userRequestDto, UserRoleEnum role) {
-        if(userRequestDto.getAdminToken() != null){
+        if (userRequestDto.getAdminToken() != null) {
             if (userRequestDto.getAdminToken().equals(ADMIN_TOKEN)) {
                 role = UserRoleEnum.ADMIN;
             }

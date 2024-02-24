@@ -10,11 +10,12 @@ public enum Day {
     SUN("sun");
 
     private final String value;
+
     Day(String value) {
         this.value = value;
     }
 
-    public String getDay(){
+    public String getDay() {
         return this.value;
     }
 }
