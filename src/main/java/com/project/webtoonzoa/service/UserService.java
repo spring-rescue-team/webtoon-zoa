@@ -1,6 +1,8 @@
 package com.project.webtoonzoa.service;
 
-import com.project.webtoonzoa.dto.UserRequestDto;
+import com.project.webtoonzoa.dto.SignUpRequestDto;
+import com.project.webtoonzoa.dto.UserInfoRequestDto;
+import com.project.webtoonzoa.dto.UserInfoResponseDto;
 import com.project.webtoonzoa.entity.Enum.UserRoleEnum;
 import com.project.webtoonzoa.entity.User;
 import com.project.webtoonzoa.global.util.JwtUtil;
@@ -9,9 +11,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class UserService {
 
     private final UserRepository userRepository;
@@ -19,7 +23,8 @@ public class UserService {
 
     private final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
 
-    public Long createUser(UserRequestDto userRequestDto) {
+    @Transactional
+    public Long createUser(SignUpRequestDto userRequestDto) {
         String email = userRequestDto.getEmail();
         String password = passwordEncoder.encode(userRequestDto.getPassword());
         String nickname = userRequestDto.getNickname();
@@ -35,7 +40,7 @@ public class UserService {
         return saveUser.getId();
     }
 
-    private UserRoleEnum validateAdminToken(UserRequestDto userRequestDto, UserRoleEnum role) {
+    private UserRoleEnum validateAdminToken(SignUpRequestDto userRequestDto, UserRoleEnum role) {
         if (userRequestDto.getAdminToken() != null) {
             if (userRequestDto.getAdminToken().equals(ADMIN_TOKEN)) {
                 role = UserRoleEnum.ADMIN;
@@ -46,5 +51,17 @@ public class UserService {
 
     public void logoutUser(HttpServletResponse response) {
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, null);
+    }
+
+    @Transactional
+    public UserInfoResponseDto updateUser(User user, UserInfoRequestDto requestDto) {
+        String nickname = requestDto.getNickname();
+        User savedUser = getUser(user);
+        savedUser.updatedNickname(nickname);
+        return new UserInfoResponseDto(user.getId(), nickname);
+    }
+
+    private User getUser(User user) {
+        return userRepository.findById(user.getId()).orElseThrow(()->new NullPointerException("존재하지 않는 회원입니다."));
     }
 }

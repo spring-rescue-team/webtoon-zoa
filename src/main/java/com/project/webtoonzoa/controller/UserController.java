@@ -1,28 +1,31 @@
 package com.project.webtoonzoa.controller;
 
 import com.project.webtoonzoa.dto.CommonResponse;
-import com.project.webtoonzoa.dto.UserRequestDto;
+import com.project.webtoonzoa.dto.SignUpRequestDto;
+import com.project.webtoonzoa.dto.UserInfoRequestDto;
+import com.project.webtoonzoa.dto.UserInfoResponseDto;
+import com.project.webtoonzoa.global.util.UserDetailsImpl;
 import com.project.webtoonzoa.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
 
-    @PostMapping("/signup")
+    @PostMapping("/users/signup")
     public ResponseEntity<CommonResponse<Long>> createUser(
-        @Valid @RequestBody UserRequestDto userRequestDto
+        @Valid @RequestBody SignUpRequestDto userRequestDto
     ) {
         return ResponseEntity.status(HttpStatus.CREATED.value()).body(
             CommonResponse.<Long>builder()
@@ -33,7 +36,21 @@ public class UserController {
         );
     }
 
-    @PostMapping("/logout")
+    @PutMapping("/my")
+    public ResponseEntity<CommonResponse<UserInfoResponseDto>> updateUser(
+        @Valid @AuthenticationPrincipal UserDetailsImpl userDetails,
+        @RequestBody UserInfoRequestDto requestDto
+    ){
+        return ResponseEntity.status(HttpStatus.OK.value()).body(
+            CommonResponse.<UserInfoResponseDto>builder()
+                .message("회원정보가 수정되었습니다.")
+                .status(HttpStatus.OK.value())
+                .data(userService.updateUser(userDetails.getUser(), requestDto))
+                .build()
+        );
+    }
+
+    @PostMapping("/users/logout")
     public ResponseEntity<CommonResponse<Long>> logoutUser(
         HttpServletResponse response
     ) {
@@ -44,4 +61,5 @@ public class UserController {
             .build()
         );
     }
+
 }

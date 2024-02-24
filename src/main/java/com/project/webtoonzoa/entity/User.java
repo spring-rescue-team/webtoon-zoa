@@ -36,4 +36,8 @@ public class User extends TimeStamped {
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
+
+    public void updatedNickname(String nickname) {
+        this.nickname = nickname;
+    }
 }

@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class ControllerAdvice {
 
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler(NullPointerException.class)
     public ResponseEntity<CommonResponse<String>> handleValidationException(
-        Exception e) {
+        NullPointerException e) {
         log.error("회원 검증 실패", e);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
             CommonResponse.<String>builder()
