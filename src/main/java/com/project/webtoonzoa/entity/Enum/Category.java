@@ -9,11 +9,11 @@ public enum Category {
 
     private final String value;
 
-    Category(String value){
+    Category(String value) {
         this.value = value;
     }
 
-    public String getValue(){
+    public String getValue() {
         return this.value;
     }
 }

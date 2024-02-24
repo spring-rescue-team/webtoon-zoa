@@ -73,7 +73,7 @@ public class SecurityConfig {
             authorizeHttpRequests
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
                 .permitAll() // resources 접근 허용 설정
-                .requestMatchers("/users/signup","/users/login", "/error").permitAll()
+                .requestMatchers("/users/signup", "/users/login", "/error").permitAll()
                 .requestMatchers(HttpMethod.GET, "/comments").permitAll()
                 .requestMatchers(HttpMethod.GET, "/webtoons").permitAll()
                 .anyRequest().authenticated() // 그 외 모든 요청 인증처리

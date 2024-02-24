@@ -4,14 +4,13 @@ import com.project.webtoonzoa.dto.CommonResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.ErrorResponse;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Slf4j(topic = "Exception")
 @RestControllerAdvice
 public class ControllerAdvice {
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<CommonResponse<String>> handleValidationException(
         Exception e) {

@@ -17,7 +17,8 @@ import org.hibernate.annotations.SQLRestriction;
 @Getter
 @NoArgsConstructor
 @SQLRestriction("deleted_at is NULL")
-public class Comment extends TimeStamped{
+public class Comment extends TimeStamped {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

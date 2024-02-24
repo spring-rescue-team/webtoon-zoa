@@ -1,20 +1,15 @@
 package com.project.webtoonzoa.global.filter;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.webtoonzoa.dto.CommonResponse;
 import com.project.webtoonzoa.global.util.JwtUtil;
 import com.project.webtoonzoa.global.util.UserDetailsServiceImpl;
 import io.jsonwebtoken.Claims;
-import io.micrometer.common.lang.NonNullApi;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.constraints.Null;
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -36,7 +31,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res,
-            FilterChain filterChain) throws ServletException, IOException {
+        FilterChain filterChain) throws ServletException, IOException {
 
         String tokenValue = jwtUtil.getJwtFromHeader(req);
 
