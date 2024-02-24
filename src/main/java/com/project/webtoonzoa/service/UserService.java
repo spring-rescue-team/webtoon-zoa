@@ -62,6 +62,7 @@ public class UserService {
     }
 
     private User getUser(User user) {
-        return userRepository.findById(user.getId()).orElseThrow(()->new NullPointerException("존재하지 않는 회원입니다."));
+        return userRepository.findById(user.getId())
+            .orElseThrow(() -> new NullPointerException("존재하지 않는 회원입니다."));
     }
 }

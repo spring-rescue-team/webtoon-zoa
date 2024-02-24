@@ -1,9 +1,8 @@
 package com.project.webtoonzoa.service;
 
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 
 import com.project.webtoonzoa.dto.SignUpRequestDto;
@@ -13,7 +12,6 @@ import com.project.webtoonzoa.entity.Enum.UserRoleEnum;
 import com.project.webtoonzoa.entity.User;
 import com.project.webtoonzoa.repository.UserRepository;
 import java.util.Optional;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -37,15 +35,13 @@ class UserServiceTest {
     @InjectMocks
     UserService userService;
 
-    @BeforeEach
-    void setUp() {
-    }
-
     @Nested
     @DisplayName("회원가입")
-    class createUser{
+    class createUser {
+
         User user;
         SignUpRequestDto signUpRequestDto;
+
         @BeforeEach
         void setUp() {
             signUpRequestDto = new SignUpRequestDto();
@@ -57,9 +53,11 @@ class UserServiceTest {
             ReflectionTestUtils.setField(user, "id", 1L);
             ReflectionTestUtils.setField(user, "email", signUpRequestDto.getEmail());
             ReflectionTestUtils.setField(user, "nickname", signUpRequestDto.getNickname());
-            ReflectionTestUtils.setField(user, "password", passwordEncoder.encode(signUpRequestDto.getPassword()));
+            ReflectionTestUtils.setField(user, "password",
+                passwordEncoder.encode(signUpRequestDto.getPassword()));
             ReflectionTestUtils.setField(user, "role", UserRoleEnum.USER);
         }
+
         @Test
         @DisplayName("회원가입 성공")
         void 회원가입_성공() {
@@ -68,24 +66,17 @@ class UserServiceTest {
             //when
             Long id = userService.createUser(signUpRequestDto);
             //then
-            Assertions.assertEquals(user.getId(),id);
-        }
-    }
-
-    @Nested
-    @DisplayName("로그아웃")
-    class logoutUser{
-        @Test
-        void 로그아웃_성공() {
-
+            assertEquals(user.getId(), id, "id가 같지 않습니다.");
         }
     }
 
     @Nested
     @DisplayName("회원정보 수정")
-    class updateUser{
+    class updateUser {
+
         User user;
         UserInfoRequestDto userInfoRequestDto;
+
         @BeforeEach
         void setUp() {
             user = new User();
@@ -98,21 +89,23 @@ class UserServiceTest {
             String password = "song1234";
             UserRoleEnum role = UserRoleEnum.USER;
 
-
             ReflectionTestUtils.setField(user, "id", 1L);
             ReflectionTestUtils.setField(user, "email", email);
             ReflectionTestUtils.setField(user, "nickname", nicknameUser);
             ReflectionTestUtils.setField(user, "password", password);
             ReflectionTestUtils.setField(user, "role", role);
         }
+
         @Test
         void 회원정보수정_성공() {
             //given
             given(userRepository.findById(1L)).willReturn(Optional.of(user));
             //when
-            UserInfoResponseDto userInfoResponseDto = userService.updateUser(user, userInfoRequestDto);
+            UserInfoResponseDto userInfoResponseDto = userService.updateUser(user,
+                userInfoRequestDto);
             //then
-            assertEquals(userInfoRequestDto.getNickname(), userInfoResponseDto.getNickname());
+            assertEquals(userInfoRequestDto.getNickname(), userInfoResponseDto.getNickname(),
+                "nickname이 같지가 않습니다.");
         }
     }
 }

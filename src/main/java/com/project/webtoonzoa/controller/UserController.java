@@ -40,7 +40,7 @@ public class UserController {
     public ResponseEntity<CommonResponse<UserInfoResponseDto>> updateUser(
         @Valid @AuthenticationPrincipal UserDetailsImpl userDetails,
         @RequestBody UserInfoRequestDto requestDto
-    ){
+    ) {
         return ResponseEntity.status(HttpStatus.OK.value()).body(
             CommonResponse.<UserInfoResponseDto>builder()
                 .message("회원정보가 수정되었습니다.")

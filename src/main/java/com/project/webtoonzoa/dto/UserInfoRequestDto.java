@@ -5,6 +5,7 @@ import lombok.Getter;
 
 @Getter
 public class UserInfoRequestDto {
+
     @NotNull
     private String nickname;
 }
