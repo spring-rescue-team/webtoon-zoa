@@ -1,6 +1,7 @@
 package com.project.webtoonzoa.global.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project.webtoonzoa.dto.CommonResponse;
 import com.project.webtoonzoa.dto.UserRequestDto;
 import com.project.webtoonzoa.entity.Enum.UserRoleEnum;
 import com.project.webtoonzoa.global.util.JwtUtil;
@@ -60,19 +61,20 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String username = user.getUsername();
         UserRoleEnum role = user.getUser().getRole();
 
-
         String token = jwtUtil.createToken(username,role);
-        jwtUtil.addJwtToCookie(token, response);
-
-        Map<String, Object> responseData = new HashMap<>();
-        responseData.put("username", user.getUsername());
+        response.addHeader(JwtUtil.AUTHORIZATION_HEADER ,token);
 
         // JSON으로 변환
         ObjectMapper objectMapper = new ObjectMapper();
-        String jsonResponse = objectMapper.writeValueAsString(responseData);
+        String jsonResponse = objectMapper.writeValueAsString(CommonResponse.<Void>builder()
+                .message("로그인에 성공하였습니다.")
+                .status(HttpStatus.OK.value())
+            .build()
+        );
 
         response.setStatus(HttpStatus.OK.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setCharacterEncoding("UTF-8");
         response.getWriter().write(jsonResponse);
         response.getWriter().flush();
     }
@@ -83,7 +85,16 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             throws IOException, ServletException {
         log.error("로그인 실패");
 
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonResponse = objectMapper.writeValueAsString(CommonResponse.<Void>builder()
+            .message("존재하지 않는 회원입니다.")
+            .status(HttpStatus.BAD_REQUEST.value())
+            .build()
+        );
+
         response.setStatus(HttpStatus.BAD_REQUEST.value());
-        response.getWriter().write("user not found");
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(jsonResponse);
     }
 }

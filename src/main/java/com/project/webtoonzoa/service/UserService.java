@@ -3,7 +3,9 @@ package com.project.webtoonzoa.service;
 import com.project.webtoonzoa.dto.UserRequestDto;
 import com.project.webtoonzoa.entity.Enum.UserRoleEnum;
 import com.project.webtoonzoa.entity.User;
+import com.project.webtoonzoa.global.util.JwtUtil;
 import com.project.webtoonzoa.repository.UserRepository;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -40,5 +42,9 @@ public class UserService {
             }
         }
         return role;
+    }
+
+    public void logoutUser(HttpServletResponse response) {
+        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, null);
     }
 }
