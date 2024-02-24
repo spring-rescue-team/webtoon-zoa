@@ -74,13 +74,13 @@ public class UserService {
     }
 
     private void validatePasswordBySavedUser(UserPasswordRequestDto requestDto, User savedUser) {
-        if(!passwordEncoder.matches(requestDto.getPassword(),savedUser.getPassword())){
+        if (!passwordEncoder.matches(requestDto.getPassword(), savedUser.getPassword())) {
             throw new PasswordNotEqualException("회원의 비밀번호와 일치하지 않습니다.");
         }
     }
 
     private void validateConfirmPassword(UserPasswordRequestDto requestDto) {
-        if(!requestDto.getChangePassword().equals(requestDto.getChangePasswordConfirm())){
+        if (!requestDto.getChangePassword().equals(requestDto.getChangePasswordConfirm())) {
             throw new PasswordNotConfirmException("바꾸려는 비밀번호와 동일하지 않습니다.");
         }
     }

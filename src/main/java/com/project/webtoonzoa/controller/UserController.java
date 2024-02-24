@@ -55,7 +55,7 @@ public class UserController {
     public ResponseEntity<CommonResponse<Void>> updateUserPassword(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @Valid @RequestBody UserPasswordRequestDto requestDto
-    ){
+    ) {
         userService.updatePassword(requestDto, userDetails.getUser());
         return ResponseEntity.status(HttpStatus.OK.value()).body(
             CommonResponse.<Void>builder()
