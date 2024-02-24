@@ -7,6 +7,7 @@ import com.project.webtoonzoa.global.util.UserDetailsServiceImpl;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -34,6 +35,7 @@ public class SecurityConfig {
         this.userDetailsService = userDetailsService;
         this.authenticationConfiguration = authenticationConfiguration;
     }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -71,8 +73,9 @@ public class SecurityConfig {
             authorizeHttpRequests
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
                 .permitAll() // resources 접근 허용 설정
-                .requestMatchers("/error","/users/**") // "/error" 추가
-                .permitAll()
+                .requestMatchers("/users/signup","/users/login", "/error").permitAll()
+                .requestMatchers(HttpMethod.GET, "/comments").permitAll()
+                .requestMatchers(HttpMethod.GET, "/webtoons").permitAll()
                 .anyRequest().authenticated() // 그 외 모든 요청 인증처리
         );
 
