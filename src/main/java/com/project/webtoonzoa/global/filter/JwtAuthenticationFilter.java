@@ -11,8 +11,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -33,18 +31,18 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request,
-            HttpServletResponse response) throws AuthenticationException {
+        HttpServletResponse response) throws AuthenticationException {
         log.info("로그인 시도");
         try {
             UserRequestDto requestDto = new ObjectMapper().readValue(request.getInputStream(),
-                    UserRequestDto.class);
+                UserRequestDto.class);
 
             return getAuthenticationManager().authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            requestDto.getEmail(),
-                            requestDto.getPassword(),
-                            null
-                    )
+                new UsernamePasswordAuthenticationToken(
+                    requestDto.getEmail(),
+                    requestDto.getPassword(),
+                    null
+                )
             );
         } catch (IOException e) {
             log.error(e.getMessage());
@@ -54,21 +52,21 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request,
-            HttpServletResponse response, FilterChain chain, Authentication authResult)
-            throws IOException, ServletException {
+        HttpServletResponse response, FilterChain chain, Authentication authResult)
+        throws IOException, ServletException {
         log.info("로그인 성공 및 JWT 생성");
         UserDetailsImpl user = (UserDetailsImpl) authResult.getPrincipal();
         String username = user.getUsername();
         UserRoleEnum role = user.getUser().getRole();
 
-        String token = jwtUtil.createToken(username,role);
-        response.addHeader(JwtUtil.AUTHORIZATION_HEADER ,token);
+        String token = jwtUtil.createToken(username, role);
+        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
 
         // JSON으로 변환
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonResponse = objectMapper.writeValueAsString(CommonResponse.<Void>builder()
-                .message("로그인에 성공하였습니다.")
-                .status(HttpStatus.OK.value())
+            .message("로그인에 성공하였습니다.")
+            .status(HttpStatus.OK.value())
             .build()
         );
 
@@ -81,8 +79,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request,
-            HttpServletResponse response, AuthenticationException failed)
-            throws IOException, ServletException {
+        HttpServletResponse response, AuthenticationException failed)
+        throws IOException, ServletException {
         log.error("로그인 실패");
 
         ObjectMapper objectMapper = new ObjectMapper();

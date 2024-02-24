@@ -2,16 +2,12 @@ package com.project.webtoonzoa.controller;
 
 import com.project.webtoonzoa.dto.CommonResponse;
 import com.project.webtoonzoa.dto.UserRequestDto;
-import com.project.webtoonzoa.global.util.JwtUtil;
-import com.project.webtoonzoa.global.util.UserDetailsImpl;
 import com.project.webtoonzoa.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
