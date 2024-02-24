@@ -3,8 +3,11 @@ package com.project.webtoonzoa.service;
 import com.project.webtoonzoa.dto.SignUpRequestDto;
 import com.project.webtoonzoa.dto.UserInfoRequestDto;
 import com.project.webtoonzoa.dto.UserInfoResponseDto;
+import com.project.webtoonzoa.dto.UserPasswordRequestDto;
 import com.project.webtoonzoa.entity.Enum.UserRoleEnum;
 import com.project.webtoonzoa.entity.User;
+import com.project.webtoonzoa.global.exception.PasswordNotConfirmException;
+import com.project.webtoonzoa.global.exception.PasswordNotEqualException;
 import com.project.webtoonzoa.global.util.JwtUtil;
 import com.project.webtoonzoa.repository.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
@@ -59,6 +62,27 @@ public class UserService {
         User savedUser = getUser(user);
         savedUser.updatedNickname(nickname);
         return new UserInfoResponseDto(user.getId(), nickname);
+    }
+
+    @Transactional
+    public void updatePassword(UserPasswordRequestDto requestDto, User user) {
+        User savedUser = getUser(user);
+        validatePasswordBySavedUser(requestDto, savedUser);
+        validateConfirmPassword(requestDto);
+        String updatedPassword = passwordEncoder.encode(requestDto.getChangePassword());
+        savedUser.updatePassword(updatedPassword);
+    }
+
+    private void validatePasswordBySavedUser(UserPasswordRequestDto requestDto, User savedUser) {
+        if(!passwordEncoder.matches(requestDto.getPassword(),savedUser.getPassword())){
+            throw new PasswordNotEqualException("회원의 비밀번호와 일치하지 않습니다.");
+        }
+    }
+
+    private void validateConfirmPassword(UserPasswordRequestDto requestDto) {
+        if(!requestDto.getChangePassword().equals(requestDto.getChangePasswordConfirm())){
+            throw new PasswordNotConfirmException("바꾸려는 비밀번호와 동일하지 않습니다.");
+        }
     }
 
     private User getUser(User user) {

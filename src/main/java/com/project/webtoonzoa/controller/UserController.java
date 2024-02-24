@@ -4,6 +4,7 @@ import com.project.webtoonzoa.dto.CommonResponse;
 import com.project.webtoonzoa.dto.SignUpRequestDto;
 import com.project.webtoonzoa.dto.UserInfoRequestDto;
 import com.project.webtoonzoa.dto.UserInfoResponseDto;
+import com.project.webtoonzoa.dto.UserPasswordRequestDto;
 import com.project.webtoonzoa.global.util.UserDetailsImpl;
 import com.project.webtoonzoa.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -46,6 +47,20 @@ public class UserController {
                 .message("회원정보가 수정되었습니다.")
                 .status(HttpStatus.OK.value())
                 .data(userService.updateUser(userDetails.getUser(), requestDto))
+                .build()
+        );
+    }
+
+    @PutMapping("/my/password")
+    public ResponseEntity<CommonResponse<Void>> updateUserPassword(
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
+        @Valid @RequestBody UserPasswordRequestDto requestDto
+    ){
+        userService.updatePassword(requestDto, userDetails.getUser());
+        return ResponseEntity.status(HttpStatus.OK.value()).body(
+            CommonResponse.<Void>builder()
+                .message("비밀번호가 변경되었습니다.")
+                .status(HttpStatus.OK.value())
                 .build()
         );
     }

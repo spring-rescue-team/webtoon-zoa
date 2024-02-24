@@ -40,4 +40,8 @@ public class User extends TimeStamped {
     public void updatedNickname(String nickname) {
         this.nickname = nickname;
     }
+
+    public void updatePassword(String updatedPassword) {
+        this.password = updatedPassword;
+    }
 }
