@@ -5,6 +5,7 @@ import com.project.webtoonzoa.dto.request.CommentRequestDto;
 import com.project.webtoonzoa.dto.response.CommentDetailResponseDto;
 import com.project.webtoonzoa.dto.response.CommentResponseDto;
 import com.project.webtoonzoa.entity.User;
+import com.project.webtoonzoa.global.util.UserDetailsImpl;
 import com.project.webtoonzoa.service.CommentService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +30,7 @@ public class CommentController {
 
     @PostMapping
     public ResponseEntity<CommonResponse<CommentResponseDto>> createComment(
-//        @AuthenticationPrincipal UserDetailsImpl userDetails,
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
         @PathVariable(name = "webtoonId") Long webtoonId,
         @RequestBody CommentRequestDto requestDto) {
         commentService.createComment(new User(), webtoonId, requestDto);
@@ -56,7 +57,7 @@ public class CommentController {
 
     @PutMapping("/{commentId}")
     public ResponseEntity<CommonResponse<CommentDetailResponseDto>> updateComment(
-//        @AuthenticationPrincipal UserDetailsImpl userDetails,
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
         @PathVariable(name = "webtoonId") Long webtoonId,
         @PathVariable(name = "commentId") Long commentId,
         @RequestBody CommentRequestDto requestDto
@@ -72,7 +73,7 @@ public class CommentController {
 
     @DeleteMapping("/{commentId}")
     public ResponseEntity<CommonResponse<CommentResponseDto>> deleteComment(
-//        @AuthenticationPrincipal UserDetailsImpl userDetails,
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
         @PathVariable(name = "webtoonId") Long webtoonId,
         @PathVariable(name = "commentId") Long commentId) {
         return ResponseEntity.status(HttpStatus.OK).body(

@@ -1,9 +1,13 @@
 package com.project.webtoonzoa.dto.response;
 
 import com.project.webtoonzoa.entity.Comment;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
+@Builder
+@AllArgsConstructor
 public class CommentDetailResponseDto {
 
     private Long id;

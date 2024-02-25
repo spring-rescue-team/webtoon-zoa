@@ -45,7 +45,6 @@ public class CommentService {
         checkExistWebtoon(webtoonId);
         Comment comment = checkExistComment(commentId);
         validateUser(user, comment);
-
         comment.update(requestDto);
         return new CommentDetailResponseDto(comment);
     }
