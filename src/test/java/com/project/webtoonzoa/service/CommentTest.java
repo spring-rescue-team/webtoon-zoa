@@ -1,6 +1,7 @@
 package com.project.webtoonzoa.service;
 
 import com.project.webtoonzoa.dto.request.CommentRequestDto;
+import com.project.webtoonzoa.dto.response.CommentDetailResponseDto;
 import com.project.webtoonzoa.entity.Comment;
 import com.project.webtoonzoa.entity.User;
 import com.project.webtoonzoa.entity.Webtoon;
@@ -24,9 +25,9 @@ public interface CommentTest {
         .build();
 
     Long TEST_COMMENT_ID = 1L;
-    Long TEST_COMMENT_ID2 = 2L;
+    Long TEST_COMMENT_ID_2 = 2L;
     String TEST_COMMENT_CONTENT ="content";
-    String TEST_COMMENT_CONTENT2 ="content2";
+    String TEST_COMMENT_CONTENT_2 ="content2";
 
 
     Comment TEST_COMMENT = Comment.builder()
@@ -37,8 +38,8 @@ public interface CommentTest {
         .build();
 
     Comment TEST_COMMENT_2 = Comment.builder()
-        .id(TEST_COMMENT_ID2)
-        .content(TEST_COMMENT_CONTENT2)
+        .id(TEST_COMMENT_ID_2)
+        .content(TEST_COMMENT_CONTENT_2)
         .user(TEST_ANOTHER_USER)
         .webtoon(TEST_WEBTOON)
         .build();
