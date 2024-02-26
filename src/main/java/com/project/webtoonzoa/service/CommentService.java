@@ -4,6 +4,7 @@ import com.project.webtoonzoa.dto.request.CommentRequestDto;
 import com.project.webtoonzoa.dto.response.CommentDetailResponseDto;
 import com.project.webtoonzoa.dto.response.CommentResponseDto;
 import com.project.webtoonzoa.entity.Comment;
+import com.project.webtoonzoa.entity.Enum.UserRoleEnum;
 import com.project.webtoonzoa.entity.User;
 import com.project.webtoonzoa.entity.Webtoon;
 import com.project.webtoonzoa.repository.CommentRepository;
@@ -35,7 +36,7 @@ public class CommentService {
 
     public List<CommentDetailResponseDto> readComment(Long webtoonId) {
         checkExistWebtoon(webtoonId);
-        return commentRepository.findByWebtoonId(webtoonId)
+        return commentRepository.findByWebtoonIdAndDeletedAtIsNullOrderByCreatedAtAsc(webtoonId)
             .stream()
             .map(comment -> new CommentDetailResponseDto(comment))
             .collect(Collectors.toList());
@@ -54,7 +55,7 @@ public class CommentService {
     public CommentResponseDto deleteComment(User user, Long webtoonId, Long commentId) {
         checkExistWebtoon(webtoonId);
         Comment comment = checkExistComment(commentId);
-        validateUser(user, comment);
+        if (!user.getRole().equals(UserRoleEnum.ADMIN)) validateUser(user, comment);
         comment.softDelete();
         return new CommentResponseDto(comment);
     }
@@ -72,7 +73,7 @@ public class CommentService {
 
     private static void validateUser(User user, Comment comment) {
         if (!comment.getUser().equals(user)) {
-            throw new AccessDeniedException("댓글 작성자만 수정할 수 있습니다.");
+            throw new AccessDeniedException("댓글 작성자만 수정, 삭제할 수 있습니다.");
         }
     }
 }
