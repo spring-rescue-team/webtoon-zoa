@@ -1,4 +1,4 @@
-package com.project.webtoonzoa.dto.user;
+package com.project.webtoonzoa.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

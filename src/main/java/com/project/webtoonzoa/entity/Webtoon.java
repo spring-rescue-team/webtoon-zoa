@@ -1,6 +1,6 @@
 package com.project.webtoonzoa.entity;
 
-import com.project.webtoonzoa.dto.webtoon.WebtoonRequestDto;
+import com.project.webtoonzoa.dto.WebtoonRequestDto;
 import com.project.webtoonzoa.entity.Enum.Category;
 import com.project.webtoonzoa.entity.Enum.Day;
 import jakarta.persistence.Column;
@@ -63,9 +63,5 @@ public class Webtoon extends TimeStamped {
         this.category = requestDto.getCategory();
         this.author = requestDto.getAuthor();
         this.day = requestDto.getDay();
-    }
-
-    public void softDelete() {
-        this.deletedAt = LocalDateTime.now();
     }
 }

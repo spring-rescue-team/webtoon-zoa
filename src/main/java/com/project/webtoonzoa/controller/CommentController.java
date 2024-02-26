@@ -1,10 +1,11 @@
 package com.project.webtoonzoa.controller;
 
-import com.project.webtoonzoa.dto.comment.CommentDetailResponseDto;
-import com.project.webtoonzoa.dto.comment.CommentLikesResponseDto;
-import com.project.webtoonzoa.dto.comment.CommentRequestDto;
-import com.project.webtoonzoa.dto.comment.CommentResponseDto;
-import com.project.webtoonzoa.global.response.CommonResponse;
+import com.project.webtoonzoa.dto.CommonResponse;
+import com.project.webtoonzoa.dto.request.CommentRequestDto;
+import com.project.webtoonzoa.dto.response.CommentDetailResponseDto;
+import com.project.webtoonzoa.dto.response.CommentLikesResponseDto;
+import com.project.webtoonzoa.dto.response.CommentResponseDto;
+import com.project.webtoonzoa.entity.User;
 import com.project.webtoonzoa.global.util.UserDetailsImpl;
 import com.project.webtoonzoa.service.CommentService;
 import java.util.List;
@@ -33,7 +34,7 @@ public class CommentController {
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @PathVariable(name = "webtoonId") Long webtoonId,
         @RequestBody CommentRequestDto requestDto) {
-        commentService.createComment(userDetails.getUser(), webtoonId, requestDto);
+        commentService.createComment(new User(), webtoonId, requestDto);
         return ResponseEntity.status(HttpStatus.CREATED.value()).body(
             CommonResponse.<CommentResponseDto>builder()
                 .status(HttpStatus.CREATED.value())
@@ -66,8 +67,7 @@ public class CommentController {
             CommonResponse.<CommentDetailResponseDto>builder()
                 .status(HttpStatus.OK.value())
                 .message("댓글 수정 완료")
-                .data(commentService.updateComment(userDetails.getUser(), webtoonId, commentId,
-                    requestDto))
+                .data(commentService.updateComment(new User(), webtoonId, commentId, requestDto))
                 .build()
         );
     }
@@ -81,7 +81,7 @@ public class CommentController {
             CommonResponse.<CommentResponseDto>builder()
                 .status(HttpStatus.OK.value())
                 .message("댓글 삭제 성공")
-                .data(commentService.deleteComment(userDetails.getUser(), webtoonId, commentId))
+                .data(commentService.deleteComment(new User(), webtoonId, commentId))
                 .build()
         );
     }
@@ -94,7 +94,7 @@ public class CommentController {
             CommonResponse.<CommentLikesResponseDto>builder()
                 .status(HttpStatus.OK.value())
                 .message("댓글 좋아요 성공")
-                .data(commentService.createCommentLikes(userDetails.getUser(), commentId))
+                .data(commentService.createCommentLikes(new User(), commentId))
                 .build()
         );
     }
@@ -107,7 +107,7 @@ public class CommentController {
             CommonResponse.<CommentLikesResponseDto>builder()
                 .status(HttpStatus.OK.value())
                 .message("댓글 좋아요 취소 성공")
-                .data(commentService.deleteCommentLikes(userDetails.getUser(), commentId))
+                .data(commentService.deleteCommentLikes(new User(), commentId))
                 .build()
         );
     }

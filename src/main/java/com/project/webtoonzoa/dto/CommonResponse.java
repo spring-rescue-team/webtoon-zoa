@@ -1,4 +1,4 @@
-package com.project.webtoonzoa.global.response;
+package com.project.webtoonzoa.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;

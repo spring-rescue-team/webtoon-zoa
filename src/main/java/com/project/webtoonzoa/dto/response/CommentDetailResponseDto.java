@@ -1,4 +1,4 @@
-package com.project.webtoonzoa.dto.comment;
+package com.project.webtoonzoa.dto.response;
 
 import com.project.webtoonzoa.entity.Comment;
 import lombok.AllArgsConstructor;

@@ -1,4 +1,4 @@
-package com.project.webtoonzoa.dto.webtoon;
+package com.project.webtoonzoa.dto;
 
 import com.project.webtoonzoa.entity.Enum.Category;
 import com.project.webtoonzoa.entity.Enum.Day;

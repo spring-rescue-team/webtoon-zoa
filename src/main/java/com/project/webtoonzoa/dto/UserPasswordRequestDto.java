@@ -1,4 +1,4 @@
-package com.project.webtoonzoa.dto.user;
+package com.project.webtoonzoa.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;

@@ -1,10 +1,10 @@
 package com.project.webtoonzoa.controller;
 
-import com.project.webtoonzoa.dto.user.SignUpRequestDto;
-import com.project.webtoonzoa.dto.user.UserInfoRequestDto;
-import com.project.webtoonzoa.dto.user.UserInfoResponseDto;
-import com.project.webtoonzoa.dto.user.UserPasswordRequestDto;
-import com.project.webtoonzoa.global.response.CommonResponse;
+import com.project.webtoonzoa.dto.CommonResponse;
+import com.project.webtoonzoa.dto.SignUpRequestDto;
+import com.project.webtoonzoa.dto.UserInfoRequestDto;
+import com.project.webtoonzoa.dto.UserInfoResponseDto;
+import com.project.webtoonzoa.dto.UserPasswordRequestDto;
 import com.project.webtoonzoa.global.util.UserDetailsImpl;
 import com.project.webtoonzoa.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;

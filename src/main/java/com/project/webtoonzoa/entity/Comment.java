@@ -1,6 +1,6 @@
 package com.project.webtoonzoa.entity;
 
-import com.project.webtoonzoa.dto.comment.CommentRequestDto;
+import com.project.webtoonzoa.dto.request.CommentRequestDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -31,7 +31,7 @@ public class Comment extends TimeStamped {
     @Column(nullable = false)
     private String content;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
