@@ -3,22 +3,16 @@ package com.project.webtoonzoa.controller;
 import com.project.webtoonzoa.dto.CommonResponse;
 import com.project.webtoonzoa.dto.request.CommentRequestDto;
 import com.project.webtoonzoa.dto.response.CommentDetailResponseDto;
+import com.project.webtoonzoa.dto.response.CommentLikesResponseDto;
 import com.project.webtoonzoa.dto.response.CommentResponseDto;
 import com.project.webtoonzoa.entity.User;
 import com.project.webtoonzoa.service.CommentService;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/comments/{webtoonId}")
@@ -81,6 +75,31 @@ public class CommentController {
                 .message("댓글 삭제 성공")
                 .data(commentService.deleteComment(new User(), webtoonId, commentId))
                 .build()
+        );
+    }
+
+    @PostMapping("/{commentId}/likes")
+    public ResponseEntity<CommonResponse<CommentLikesResponseDto>> createCommentLikes(
+//            @AuthenticationPrincipal UserDetailsImpl userDetails,
+             @PathVariable(name = "commentId") Long commentId){
+        return ResponseEntity.status(HttpStatus.OK).body(
+                CommonResponse.<CommentLikesResponseDto>builder()
+                        .status(HttpStatus.OK.value())
+                        .message("댓글 좋아요 성공")
+                        .data(commentService.createCommentLikes(new User(), commentId))
+                        .build()
+        );
+    }
+    @DeleteMapping("/{commentId}/likes")
+    public ResponseEntity<CommonResponse<CommentLikesResponseDto>> deleteCommentLikes(
+//            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @PathVariable(name = "commentId") Long commentId){
+        return ResponseEntity.status(HttpStatus.OK).body(
+                CommonResponse.<CommentLikesResponseDto>builder()
+                        .status(HttpStatus.OK.value())
+                        .message("댓글 좋아요 취소 성공")
+                        .data(commentService.deleteCommentLikes(new User(), commentId))
+                        .build()
         );
     }
 }
