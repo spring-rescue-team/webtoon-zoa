@@ -47,6 +47,7 @@ class CommentServiceTest implements CommentTest {
 
         //when
         CommentResponseDto responseDto = commentService.createComment(TEST_USER, TEST_WEBTOON_ID, TEST_COMMENT_REQUEST_DTO);
+
         //then
         assertThat(responseDto.getId()).isEqualTo(TEST_COMMENT_ID);
     }

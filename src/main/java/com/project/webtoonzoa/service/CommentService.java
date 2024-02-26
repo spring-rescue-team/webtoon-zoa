@@ -43,7 +43,8 @@ public class CommentService {
     }
 
     @Transactional
-    public CommentDetailResponseDto updateComment(User user, Long webtoonId, Long commentId, CommentRequestDto requestDto) {
+    public CommentDetailResponseDto updateComment(User user, Long webtoonId, Long commentId,
+        CommentRequestDto requestDto) {
         checkExistWebtoon(webtoonId);
         Comment comment = checkExistComment(commentId);
         validateUser(user, comment);
@@ -55,7 +56,9 @@ public class CommentService {
     public CommentResponseDto deleteComment(User user, Long webtoonId, Long commentId) {
         checkExistWebtoon(webtoonId);
         Comment comment = checkExistComment(commentId);
-        if (!user.getRole().equals(UserRoleEnum.ADMIN)) validateUser(user, comment);
+        if (!user.getRole().equals(UserRoleEnum.ADMIN)) {
+            validateUser(user, comment);
+        }
         comment.softDelete();
         return new CommentResponseDto(comment);
     }
