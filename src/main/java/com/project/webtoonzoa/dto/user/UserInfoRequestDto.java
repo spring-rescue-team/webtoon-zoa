@@ -1,4 +1,4 @@
-package com.project.webtoonzoa.dto;
+package com.project.webtoonzoa.dto.user;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;

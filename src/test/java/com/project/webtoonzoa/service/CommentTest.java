@@ -1,6 +1,6 @@
 package com.project.webtoonzoa.service;
 
-import com.project.webtoonzoa.dto.request.CommentRequestDto;
+import com.project.webtoonzoa.dto.comment.CommentRequestDto;
 import com.project.webtoonzoa.entity.Comment;
 import com.project.webtoonzoa.entity.Enum.UserRoleEnum;
 import com.project.webtoonzoa.entity.User;

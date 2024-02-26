@@ -1,4 +1,4 @@
-package com.project.webtoonzoa.dto;
+package com.project.webtoonzoa.dto.webtoon;
 
 import com.project.webtoonzoa.entity.Enum.Category;
 import com.project.webtoonzoa.entity.Enum.Day;
@@ -8,6 +8,7 @@ import lombok.Getter;
 @Getter
 public class WebtoonResponseDto {
 
+    private Long id;
     private String title;
     private String description;
     private Category category;
@@ -15,6 +16,7 @@ public class WebtoonResponseDto {
     private Day day;
 
     public WebtoonResponseDto(Webtoon webtoon) {
+        this.id = webtoon.getId();
         this.title = webtoon.getTitle();
         this.description = webtoon.getDescription();
         this.category = webtoon.getCategory();

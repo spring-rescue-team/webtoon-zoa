@@ -1,9 +1,9 @@
 package com.project.webtoonzoa.global.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.webtoonzoa.dto.CommonResponse;
-import com.project.webtoonzoa.dto.SignUpRequestDto;
+import com.project.webtoonzoa.dto.user.SignUpRequestDto;
 import com.project.webtoonzoa.entity.Enum.UserRoleEnum;
+import com.project.webtoonzoa.global.response.CommonResponse;
 import com.project.webtoonzoa.global.util.JwtUtil;
 import com.project.webtoonzoa.global.util.UserDetailsImpl;
 import jakarta.servlet.FilterChain;

@@ -6,10 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
-import com.project.webtoonzoa.dto.SignUpRequestDto;
-import com.project.webtoonzoa.dto.UserInfoRequestDto;
-import com.project.webtoonzoa.dto.UserInfoResponseDto;
-import com.project.webtoonzoa.dto.UserPasswordRequestDto;
+import com.project.webtoonzoa.dto.user.SignUpRequestDto;
+import com.project.webtoonzoa.dto.user.UserInfoRequestDto;
+import com.project.webtoonzoa.dto.user.UserInfoResponseDto;
+import com.project.webtoonzoa.dto.user.UserPasswordRequestDto;
 import com.project.webtoonzoa.entity.Enum.UserRoleEnum;
 import com.project.webtoonzoa.entity.User;
 import com.project.webtoonzoa.global.exception.PasswordNotConfirmException;
@@ -71,7 +71,10 @@ class UserServiceTest {
             Long id = userService.createUser(signUpRequestDto);
             //then
             assertEquals(user.getId(), id, "id가 같지 않습니다.");
+
         }
+
+
     }
 
     @Nested

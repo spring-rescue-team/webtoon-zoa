@@ -1,7 +1,7 @@
 package com.project.webtoonzoa.service;
 
-import com.project.webtoonzoa.dto.WebtoonRequestDto;
-import com.project.webtoonzoa.dto.WebtoonResponseDto;
+import com.project.webtoonzoa.dto.webtoon.WebtoonRequestDto;
+import com.project.webtoonzoa.dto.webtoon.WebtoonResponseDto;
 import com.project.webtoonzoa.entity.Enum.UserRoleEnum;
 import com.project.webtoonzoa.entity.User;
 import com.project.webtoonzoa.entity.Webtoon;
@@ -28,7 +28,7 @@ public class WebtoonService {
     }
 
     public List<WebtoonResponseDto> findAllWebtoon() {
-        List<Webtoon> webtoons = webtoonRepository.findAll();
+        List<Webtoon> webtoons = webtoonRepository.findAllByDeletedAtIsNull();
 
         return webtoons.stream()
             .map(WebtoonResponseDto::new)
@@ -42,7 +42,8 @@ public class WebtoonService {
     }
 
     @Transactional
-    public WebtoonResponseDto updateWebtoon(User user, Long webtoonId, WebtoonRequestDto requestDto) {
+    public WebtoonResponseDto updateWebtoon(User user, Long webtoonId,
+        WebtoonRequestDto requestDto) {
         checkRole(user);
         Webtoon webtoon = findWebtoon(webtoonId);
 
@@ -51,16 +52,15 @@ public class WebtoonService {
     }
 
     @Transactional
-    public WebtoonResponseDto deleteWebtoon(User user, Long webtoonId) {
+    public Long deleteWebtoon(User user, Long webtoonId) {
         checkRole(user);
         Webtoon webtoon = findWebtoon(webtoonId);
-
-        webtoonRepository.delete(webtoon);
-        return new WebtoonResponseDto(webtoon);
+        webtoon.softDelete();
+        return webtoon.getId();
     }
 
-    private void checkRole(User user){
-        if(user.getRole() != UserRoleEnum.ADMIN){
+    private void checkRole(User user) {
+        if (user.getRole().equals(UserRoleEnum.ADMIN)) {
             throw new AccessDeniedException("접근 권한이 없습니다.");
         }
     }
