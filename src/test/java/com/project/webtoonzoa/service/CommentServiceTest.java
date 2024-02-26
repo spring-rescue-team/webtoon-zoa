@@ -46,7 +46,8 @@ class CommentServiceTest implements CommentTest {
         given(commentRepository.save(any(Comment.class))).willReturn(TEST_COMMENT);
 
         //when
-        CommentResponseDto responseDto = commentService.createComment(TEST_USER, TEST_WEBTOON_ID, TEST_COMMENT_REQUEST_DTO);
+        CommentResponseDto responseDto = commentService.createComment(TEST_USER, TEST_WEBTOON_ID,
+            TEST_COMMENT_REQUEST_DTO);
 
         //then
         assertThat(responseDto.getId()).isEqualTo(TEST_COMMENT_ID);
@@ -57,7 +58,8 @@ class CommentServiceTest implements CommentTest {
     void readComment() {
         //given
         given(webtoonRepository.findById(TEST_WEBTOON_ID)).willReturn(Optional.of(TEST_WEBTOON));
-        given(commentRepository.findByWebtoonIdAndDeletedAtIsNullOrderByCreatedAtAsc(TEST_WEBTOON_ID)).willReturn(List.of(TEST_COMMENT, TEST_COMMENT_2));
+        given(commentRepository.findByWebtoonIdAndDeletedAtIsNullOrderByCreatedAtAsc(
+            TEST_WEBTOON_ID)).willReturn(List.of(TEST_COMMENT, TEST_COMMENT_2));
 
         //when
         List<CommentDetailResponseDto> responseDtos = commentService.readComment(TEST_WEBTOON_ID);
@@ -76,8 +78,10 @@ class CommentServiceTest implements CommentTest {
         @DisplayName("댓글 수정 성공")
         void updateComment_success() {
             //given
-            given(webtoonRepository.findById(TEST_WEBTOON_ID)).willReturn(Optional.of(TEST_WEBTOON));
-            given(commentRepository.findById(TEST_COMMENT_ID)).willReturn(Optional.of(TEST_COMMENT));
+            given(webtoonRepository.findById(TEST_WEBTOON_ID)).willReturn(
+                Optional.of(TEST_WEBTOON));
+            given(commentRepository.findById(TEST_COMMENT_ID)).willReturn(
+                Optional.of(TEST_COMMENT));
 
             //when
             CommentDetailResponseDto responseDto = commentService.updateComment(
@@ -93,12 +97,15 @@ class CommentServiceTest implements CommentTest {
         @DisplayName("댓글 수정 실패_다른 유저")
         void updateComment_fail_anotherUser() {
             //given
-            given(webtoonRepository.findById(TEST_WEBTOON_ID)).willReturn(Optional.of(TEST_WEBTOON));
-            given(commentRepository.findById(TEST_COMMENT_ID)).willReturn(Optional.of(TEST_COMMENT));
+            given(webtoonRepository.findById(TEST_WEBTOON_ID)).willReturn(
+                Optional.of(TEST_WEBTOON));
+            given(commentRepository.findById(TEST_COMMENT_ID)).willReturn(
+                Optional.of(TEST_COMMENT));
 
             // when, then
             assertThrows(AccessDeniedException.class, () ->
-                commentService.updateComment(TEST_ANOTHER_USER, TEST_WEBTOON_ID, TEST_COMMENT_ID, TEST_COMMENT_UPDATE_REQUEST_DTO)
+                commentService.updateComment(TEST_ANOTHER_USER, TEST_WEBTOON_ID, TEST_COMMENT_ID,
+                    TEST_COMMENT_UPDATE_REQUEST_DTO)
             );
         }
     }
@@ -111,8 +118,10 @@ class CommentServiceTest implements CommentTest {
         @DisplayName("댓글 삭제 성공_유저")
         void deleteComment_success_user() {
             //given
-            given(webtoonRepository.findById(TEST_WEBTOON_ID)).willReturn(Optional.of(TEST_WEBTOON));
-            given(commentRepository.findById(TEST_COMMENT_ID)).willReturn(Optional.of(TEST_COMMENT));
+            given(webtoonRepository.findById(TEST_WEBTOON_ID)).willReturn(
+                Optional.of(TEST_WEBTOON));
+            given(commentRepository.findById(TEST_COMMENT_ID)).willReturn(
+                Optional.of(TEST_COMMENT));
 
             //when
             CommentResponseDto responseDto = commentService.deleteComment(
@@ -126,8 +135,10 @@ class CommentServiceTest implements CommentTest {
         @DisplayName("댓글 삭제 성공_관리자")
         void deleteComment_success_admin() {
             //given
-            given(webtoonRepository.findById(TEST_WEBTOON_ID)).willReturn(Optional.of(TEST_WEBTOON));
-            given(commentRepository.findById(TEST_COMMENT_ID)).willReturn(Optional.of(TEST_COMMENT));
+            given(webtoonRepository.findById(TEST_WEBTOON_ID)).willReturn(
+                Optional.of(TEST_WEBTOON));
+            given(commentRepository.findById(TEST_COMMENT_ID)).willReturn(
+                Optional.of(TEST_COMMENT));
 
             //when
             CommentResponseDto responseDto = commentService.deleteComment(
@@ -141,12 +152,15 @@ class CommentServiceTest implements CommentTest {
         @DisplayName("댓글 삭제 실패_다른유저")
         void deleteComment_fail_anotherUser() {
             //given
-            given(webtoonRepository.findById(TEST_WEBTOON_ID)).willReturn(Optional.of(TEST_WEBTOON));
-            given(commentRepository.findById(TEST_COMMENT_ID)).willReturn(Optional.of(TEST_COMMENT));
+            given(webtoonRepository.findById(TEST_WEBTOON_ID)).willReturn(
+                Optional.of(TEST_WEBTOON));
+            given(commentRepository.findById(TEST_COMMENT_ID)).willReturn(
+                Optional.of(TEST_COMMENT));
 
             // when, then
             assertThrows(AccessDeniedException.class,
-                () -> commentService.deleteComment(TEST_ANOTHER_USER, TEST_WEBTOON_ID, TEST_COMMENT_ID));
+                () -> commentService.deleteComment(TEST_ANOTHER_USER, TEST_WEBTOON_ID,
+                    TEST_COMMENT_ID));
         }
     }
 }

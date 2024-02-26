@@ -26,4 +26,9 @@ public class CommentLikes extends TimeStamped {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "comment_id")
     private Comment comment;
+
+    public CommentLikes(User user, Comment comment) {
+        this.user = user;
+        this.comment = comment;
+    }
 }
