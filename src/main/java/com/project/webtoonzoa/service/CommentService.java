@@ -81,7 +81,7 @@ public class CommentService {
             () -> new NoSuchElementException("해당 댓글 좋아요가 존재하지 않습니다.")
         );
     }
-
+  
     private Webtoon checkExistWebtoon(Long webtoonId) {
         return webtoonRepository.findById(webtoonId).orElseThrow(
             () -> new NoSuchElementException("웹툰이 존재하지 않습니다."));
@@ -122,4 +122,5 @@ public class CommentService {
 
         return new CommentLikesResponseDto(savedCommentLikes);
     }
+  
 }
