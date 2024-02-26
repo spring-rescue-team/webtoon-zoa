@@ -2,7 +2,7 @@ package com.project.webtoonzoa.global.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.webtoonzoa.dto.CommonResponse;
-import com.project.webtoonzoa.dto.UserRequestDto;
+import com.project.webtoonzoa.dto.SignUpRequestDto;
 import com.project.webtoonzoa.entity.Enum.UserRoleEnum;
 import com.project.webtoonzoa.global.util.JwtUtil;
 import com.project.webtoonzoa.global.util.UserDetailsImpl;
@@ -34,8 +34,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         HttpServletResponse response) throws AuthenticationException {
         log.info("로그인 시도");
         try {
-            UserRequestDto requestDto = new ObjectMapper().readValue(request.getInputStream(),
-                UserRequestDto.class);
+            SignUpRequestDto requestDto = new ObjectMapper().readValue(request.getInputStream(),
+                SignUpRequestDto.class);
 
             return getAuthenticationManager().authenticate(
                 new UsernamePasswordAuthenticationToken(
