@@ -25,7 +25,8 @@ public class CommentService {
     private final WebtoonRepository webtoonRepository;
 
     @Transactional
-    public CommentResponseDto createComment(User user, Long webtoonId, CommentRequestDto requestDto) {
+    public CommentResponseDto createComment(User user, Long webtoonId,
+        CommentRequestDto requestDto) {
         Webtoon webtoon = checkExistWebtoon(webtoonId);
         Comment savedComment = commentRepository.save(new Comment(requestDto, user, webtoon));
         return new CommentResponseDto(savedComment);

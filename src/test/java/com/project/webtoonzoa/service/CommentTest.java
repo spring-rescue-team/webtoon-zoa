@@ -1,11 +1,9 @@
 package com.project.webtoonzoa.service;
 
 import com.project.webtoonzoa.dto.request.CommentRequestDto;
-import com.project.webtoonzoa.dto.response.CommentDetailResponseDto;
 import com.project.webtoonzoa.entity.Comment;
 import com.project.webtoonzoa.entity.User;
 import com.project.webtoonzoa.entity.Webtoon;
-import org.springframework.test.util.ReflectionTestUtils;
 
 public interface CommentTest {
 
@@ -28,7 +26,7 @@ public interface CommentTest {
     Long TEST_COMMENT_ID_2 = 2L;
     String TEST_COMMENT_CONTENT ="content";
     String TEST_COMMENT_CONTENT_2 ="content2";
-
+    String TEST_COMMENT_UPDATE_CONTENT = "update content";
 
     Comment TEST_COMMENT = Comment.builder()
         .id(TEST_COMMENT_ID)
@@ -46,5 +44,9 @@ public interface CommentTest {
 
     CommentRequestDto TEST_COMMENT_REQUEST_DTO = CommentRequestDto.builder()
         .content(TEST_COMMENT_CONTENT)
+        .build();
+
+    CommentRequestDto TEST_COMMENT_UPDATE_REQUEST_DTO = CommentRequestDto.builder()
+        .content(TEST_COMMENT_UPDATE_CONTENT)
         .build();
 }
