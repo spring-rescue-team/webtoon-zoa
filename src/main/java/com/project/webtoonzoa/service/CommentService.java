@@ -22,10 +22,6 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
-
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -79,19 +75,23 @@ public class CommentService {
             () -> new NoSuchElementException("댓글이 존재하지 않습니다.")
         );
     }
+
     private CommentLikes checkExistCommentLikes(Long commentLikesId) {
         return commentLikesRepository.findById(commentLikesId).orElseThrow(
-                () -> new NoSuchElementException("해당 댓글 좋아요가 존재하지 않습니다.")
+            () -> new NoSuchElementException("해당 댓글 좋아요가 존재하지 않습니다.")
         );
     }
+
     private Webtoon checkExistWebtoon(Long webtoonId) {
         return webtoonRepository.findById(webtoonId).orElseThrow(
             () -> new NoSuchElementException("웹툰이 존재하지 않습니다."));
     }
+
     private User checkExistUser(User user) {
         return userRepository.findById(user.getId()).orElseThrow(
-                () -> new NoSuchElementException("유저가 존재하지 않습니다."));
+            () -> new NoSuchElementException("유저가 존재하지 않습니다."));
     }
+
     private static void validateUser(User user, Comment comment) {
         if (!comment.getUser().equals(user)) {
             throw new AccessDeniedException("댓글 작성자만 수정, 삭제할 수 있습니다.");
@@ -102,10 +102,11 @@ public class CommentService {
     public CommentLikesResponseDto createCommentLikes(User user, Long commentId) {
         User savedUser = checkExistUser(user);
         Comment savedComment = checkExistComment(commentId);
-        if(commentLikesRepository.existsByUserAndComment(savedUser, savedComment)) {
+        if (commentLikesRepository.existsByUserAndComment(savedUser, savedComment)) {
             throw new DataIntegrityViolationException("이미 게시글에 좋아요를 했습니다.");
         }
-        CommentLikes savedCommentLikes = commentLikesRepository.save(new CommentLikes(savedUser, savedComment));
+        CommentLikes savedCommentLikes = commentLikesRepository.save(
+            new CommentLikes(savedUser, savedComment));
         return new CommentLikesResponseDto(savedCommentLikes);
     }
 
@@ -114,7 +115,7 @@ public class CommentService {
         User savedUser = checkExistUser(user);
         Comment savedComment = checkExistComment(commentId);
         CommentLikes savedCommentLikes = checkExistCommentLikes(commentId);
-        if(!commentLikesRepository.existsByUserAndComment(savedUser, savedComment)) {
+        if (!commentLikesRepository.existsByUserAndComment(savedUser, savedComment)) {
             throw new NoSuchElementException("해당 댓글 좋아요가 존재하지 않습니다.");
         }
         commentLikesRepository.delete(new CommentLikes(savedUser, savedComment));
