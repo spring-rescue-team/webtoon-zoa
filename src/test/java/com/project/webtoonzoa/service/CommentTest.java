@@ -35,8 +35,8 @@ public interface CommentTest {
 
     Long TEST_COMMENT_ID = 1L;
     Long TEST_COMMENT_ID_2 = 2L;
-    String TEST_COMMENT_CONTENT ="content";
-    String TEST_COMMENT_CONTENT_2 ="content2";
+    String TEST_COMMENT_CONTENT = "content";
+    String TEST_COMMENT_CONTENT_2 = "content2";
     String TEST_COMMENT_UPDATE_CONTENT = "update content";
 
     Comment TEST_COMMENT = Comment.builder()
