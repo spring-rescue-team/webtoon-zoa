@@ -1,5 +1,6 @@
 package com.project.webtoonzoa.entity;
 
+import com.project.webtoonzoa.dto.WebtoonRequestDto;
 import com.project.webtoonzoa.entity.Enum.Category;
 import com.project.webtoonzoa.entity.Enum.Day;
 import jakarta.persistence.Column;
@@ -47,4 +48,20 @@ public class Webtoon extends TimeStamped {
 
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
+
+    public Webtoon(WebtoonRequestDto requestDto) {
+        this.title = requestDto.getTitle();
+        this.description = requestDto.getDescription();
+        this.category = requestDto.getCategory();
+        this.author = requestDto.getAuthor();
+        this.day = requestDto.getDay();
+    }
+
+    public void update(WebtoonRequestDto requestDto) {
+        this.title = requestDto.getTitle();
+        this.description = requestDto.getDescription();
+        this.category = requestDto.getCategory();
+        this.author = requestDto.getAuthor();
+        this.day = requestDto.getDay();
+    }
 }
