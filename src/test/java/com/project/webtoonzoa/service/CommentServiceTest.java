@@ -5,8 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
-import com.project.webtoonzoa.dto.response.CommentDetailResponseDto;
-import com.project.webtoonzoa.dto.response.CommentResponseDto;
+import com.project.webtoonzoa.dto.comment.CommentDetailResponseDto;
+import com.project.webtoonzoa.dto.comment.CommentResponseDto;
 import com.project.webtoonzoa.entity.Comment;
 import com.project.webtoonzoa.repository.CommentRepository;
 import com.project.webtoonzoa.repository.WebtoonRepository;

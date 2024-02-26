@@ -1,9 +1,9 @@
 package com.project.webtoonzoa.service;
 
-import com.project.webtoonzoa.dto.request.CommentRequestDto;
-import com.project.webtoonzoa.dto.response.CommentDetailResponseDto;
-import com.project.webtoonzoa.dto.response.CommentLikesResponseDto;
-import com.project.webtoonzoa.dto.response.CommentResponseDto;
+import com.project.webtoonzoa.dto.comment.CommentDetailResponseDto;
+import com.project.webtoonzoa.dto.comment.CommentLikesResponseDto;
+import com.project.webtoonzoa.dto.comment.CommentRequestDto;
+import com.project.webtoonzoa.dto.comment.CommentResponseDto;
 import com.project.webtoonzoa.entity.Comment;
 import com.project.webtoonzoa.entity.CommentLikes;
 import com.project.webtoonzoa.entity.Enum.UserRoleEnum;
@@ -81,7 +81,7 @@ public class CommentService {
             () -> new NoSuchElementException("해당 댓글 좋아요가 존재하지 않습니다.")
         );
     }
-  
+
     private Webtoon checkExistWebtoon(Long webtoonId) {
         return webtoonRepository.findById(webtoonId).orElseThrow(
             () -> new NoSuchElementException("웹툰이 존재하지 않습니다."));
@@ -93,7 +93,7 @@ public class CommentService {
     }
 
     private static void validateUser(User user, Comment comment) {
-        if (!comment.getUser().equals(user)) {
+        if (!comment.getUser().getId().equals(user.getId())) {
             throw new AccessDeniedException("댓글 작성자만 수정, 삭제할 수 있습니다.");
         }
     }
@@ -122,5 +122,5 @@ public class CommentService {
 
         return new CommentLikesResponseDto(savedCommentLikes);
     }
-  
+
 }

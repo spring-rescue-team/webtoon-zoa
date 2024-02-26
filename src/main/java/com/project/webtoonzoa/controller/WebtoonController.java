@@ -1,8 +1,8 @@
 package com.project.webtoonzoa.controller;
 
-import com.project.webtoonzoa.dto.CommonResponse;
-import com.project.webtoonzoa.dto.WebtoonRequestDto;
-import com.project.webtoonzoa.dto.WebtoonResponseDto;
+import com.project.webtoonzoa.dto.webtoon.WebtoonRequestDto;
+import com.project.webtoonzoa.dto.webtoon.WebtoonResponseDto;
+import com.project.webtoonzoa.global.response.CommonResponse;
 import com.project.webtoonzoa.global.util.UserDetailsImpl;
 import com.project.webtoonzoa.service.WebtoonService;
 import java.util.List;
@@ -88,15 +88,15 @@ public class WebtoonController {
     }
 
     @DeleteMapping("/{webtoonId}")
-    public ResponseEntity<CommonResponse<WebtoonResponseDto>> deleteWebtoon(
+    public ResponseEntity<CommonResponse<Long>> deleteWebtoon(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @PathVariable Long webtoonId) {
 
-        WebtoonResponseDto responseDto = webtoonService.deleteWebtoon(userDetails.getUser(),
+        Long responseDto = webtoonService.deleteWebtoon(userDetails.getUser(),
             webtoonId);
 
         return ResponseEntity.status(HttpStatus.OK.value()).body(
-            CommonResponse.<WebtoonResponseDto>builder()
+            CommonResponse.<Long>builder()
                 .status(HttpStatus.OK.value())
                 .message("웹툰 삭제 성공")
                 .data(responseDto)
