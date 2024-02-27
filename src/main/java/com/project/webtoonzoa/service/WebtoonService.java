@@ -1,14 +1,14 @@
 package com.project.webtoonzoa.service;
 
-import com.project.webtoonzoa.dto.WebtoonLikesResponseDto;
-import com.project.webtoonzoa.entity.WebtoonLikes;
-import com.project.webtoonzoa.repository.UserRepository;
-import com.project.webtoonzoa.repository.WebtoonLikesRepository;
+import com.project.webtoonzoa.dto.webtoon.WebtoonLikesResponseDto;
 import com.project.webtoonzoa.dto.webtoon.WebtoonRequestDto;
 import com.project.webtoonzoa.dto.webtoon.WebtoonResponseDto;
 import com.project.webtoonzoa.entity.Enum.UserRoleEnum;
 import com.project.webtoonzoa.entity.User;
 import com.project.webtoonzoa.entity.Webtoon;
+import com.project.webtoonzoa.entity.WebtoonLikes;
+import com.project.webtoonzoa.repository.UserRepository;
+import com.project.webtoonzoa.repository.WebtoonLikesRepository;
 import com.project.webtoonzoa.repository.WebtoonRepository;
 import jakarta.transaction.Transactional;
 import java.util.List;

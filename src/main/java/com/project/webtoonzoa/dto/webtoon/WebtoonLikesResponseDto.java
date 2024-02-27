@@ -1,4 +1,4 @@
-package com.project.webtoonzoa.dto;
+package com.project.webtoonzoa.dto.webtoon;
 
 import com.project.webtoonzoa.entity.WebtoonLikes;
 import lombok.Getter;

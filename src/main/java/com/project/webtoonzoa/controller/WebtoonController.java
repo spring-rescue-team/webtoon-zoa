@@ -1,5 +1,6 @@
 package com.project.webtoonzoa.controller;
 
+import com.project.webtoonzoa.dto.webtoon.WebtoonLikesResponseDto;
 import com.project.webtoonzoa.dto.webtoon.WebtoonRequestDto;
 import com.project.webtoonzoa.dto.webtoon.WebtoonResponseDto;
 import com.project.webtoonzoa.global.response.CommonResponse;
@@ -114,7 +115,7 @@ public class WebtoonController {
             CommonResponse.<WebtoonLikesResponseDto>builder()
                 .status(HttpStatus.OK.value())
                 .message("댓글 좋아요 성공")
-                .data(webtoonService.createWebtoonLikes(new User(), webtoonId))
+                .data(webtoonService.createWebtoonLikes(userDetails.getUser(), webtoonId))
                 .build()
         );
     }
@@ -127,7 +128,7 @@ public class WebtoonController {
             CommonResponse.<WebtoonLikesResponseDto>builder()
                 .status(HttpStatus.OK.value())
                 .message("댓글 좋아요 취소 성공")
-                .data(webtoonService.deleteWebtoonLikes(new User(), webtoonId))
+                .data(webtoonService.deleteWebtoonLikes(userDetails.getUser(), webtoonId))
                 .build()
         );
     }
