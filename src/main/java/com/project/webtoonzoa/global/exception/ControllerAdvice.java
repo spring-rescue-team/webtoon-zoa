@@ -1,6 +1,7 @@
 package com.project.webtoonzoa.global.exception;
 
 import com.project.webtoonzoa.global.response.CommonResponse;
+import jakarta.validation.ConstraintViolationException;
 import java.nio.file.AccessDeniedException;
 import java.util.NoSuchElementException;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +29,7 @@ public class ControllerAdvice {
     @ExceptionHandler(UserNotExistence.class)
     public ResponseEntity<CommonResponse<String>> handleValidationException(
         UserNotExistence e) {
-        log.error("회원 비밀번호 불일치 에러", e);
+        log.error("회원 에러", e);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
             CommonResponse.<String>builder()
                 .message(e.getMessage())

@@ -6,6 +6,6 @@ import lombok.Getter;
 @Getter
 public class UserInfoRequestDto {
 
-    @NotNull
+    @NotNull(message = "nickname이 Null입니다.")
     private String nickname;
 }
