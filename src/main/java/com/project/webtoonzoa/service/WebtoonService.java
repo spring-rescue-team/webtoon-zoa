@@ -3,6 +3,7 @@ package com.project.webtoonzoa.service;
 import com.project.webtoonzoa.dto.webtoon.WebtoonLikesResponseDto;
 import com.project.webtoonzoa.dto.webtoon.WebtoonRequestDto;
 import com.project.webtoonzoa.dto.webtoon.WebtoonResponseDto;
+import com.project.webtoonzoa.dto.webtoon.WebtoonTop5ResponseDto;
 import com.project.webtoonzoa.entity.Enum.UserRoleEnum;
 import com.project.webtoonzoa.entity.User;
 import com.project.webtoonzoa.entity.Webtoon;
@@ -27,7 +28,6 @@ public class WebtoonService {
     private final WebtoonLikesRepository webtoonLikesRepository;
     private final UserRepository userRepository;
 
-
     @Transactional
     public WebtoonResponseDto createWebtoon(User user, WebtoonRequestDto requestDto) {
         checkRole(user);
@@ -47,6 +47,10 @@ public class WebtoonService {
     public WebtoonResponseDto readWebtoon(Long webtoonId) {
         Webtoon webtoon = findWebtoon(webtoonId);
         return new WebtoonResponseDto(webtoon);
+    }
+
+    public List<WebtoonTop5ResponseDto> findTop5PopularWebtoons() {
+        return webtoonRepository.findTop5ByOrderByWebtoonLikesDesc();
     }
 
     @Transactional
