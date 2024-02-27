@@ -14,6 +14,7 @@ import com.project.webtoonzoa.entity.Enum.UserRoleEnum;
 import com.project.webtoonzoa.entity.User;
 import com.project.webtoonzoa.global.exception.PasswordNotConfirmException;
 import com.project.webtoonzoa.global.exception.PasswordNotEqualException;
+import com.project.webtoonzoa.repository.UserRecentPasswordRepository;
 import com.project.webtoonzoa.repository.UserRepository;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,6 +36,9 @@ class UserServiceTest {
 
     @Mock
     PasswordEncoder passwordEncoder;
+
+    @Mock
+    UserRecentPasswordRepository userRecentPasswordRepository;
 
     @InjectMocks
     UserService userService;

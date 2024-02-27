@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserBannedResponseDto {
+
     private Long id;
     private boolean banned;
 }

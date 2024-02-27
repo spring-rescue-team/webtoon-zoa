@@ -8,8 +8,6 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -41,7 +39,7 @@ public class User extends TimeStamped {
 
     private boolean banned;
 
-    public void updateBanned(){
+    public void updateBanned() {
         this.banned = !banned;
     }
 

@@ -7,7 +7,9 @@ import com.project.webtoonzoa.dto.user.UserInfoResponseDto;
 import com.project.webtoonzoa.dto.user.UserPasswordRequestDto;
 import com.project.webtoonzoa.entity.Enum.UserRoleEnum;
 import com.project.webtoonzoa.entity.User;
+import com.project.webtoonzoa.entity.UserRecentPassword;
 import com.project.webtoonzoa.global.exception.IsNotAdminUser;
+import com.project.webtoonzoa.global.exception.PasswordIsRecentPasswordException;
 import com.project.webtoonzoa.global.exception.PasswordNotConfirmException;
 import com.project.webtoonzoa.global.exception.PasswordNotEqualException;
 import com.project.webtoonzoa.global.exception.UserNotExistence;
@@ -15,6 +17,7 @@ import com.project.webtoonzoa.global.util.JwtUtil;
 import com.project.webtoonzoa.repository.UserRecentPasswordRepository;
 import com.project.webtoonzoa.repository.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -45,6 +48,7 @@ public class UserService {
             .role(role)
             .build();
         User saveUser = userRepository.save(user);
+        saveRecentPassword(saveUser, password);
         return saveUser.getId();
     }
 
@@ -73,13 +77,42 @@ public class UserService {
     public void updatePassword(UserPasswordRequestDto requestDto, User user) {
         User savedUser = getUserById(user.getId());
         validatePasswordBySavedUser(requestDto, savedUser);
-        validatePasswordByRecentPasswordTop3();
+        List<UserRecentPassword> recentPasswords = userRecentPasswordRepository.findAllByUserIdOrderByCreatedAtDesc(
+            user.getId());
+
+        validatePasswordByRecentPassword(requestDto.getChangePassword(), recentPasswords);
+
         validateConfirmPassword(requestDto);
+
         String updatedPassword = passwordEncoder.encode(requestDto.getChangePassword());
+
+        saveRecentPassword(user, updatedPassword);
         savedUser.updatePassword(updatedPassword);
+
+        removeRecentPasswordMoreThanThreeSize(recentPasswords);
     }
 
-    private void validatePasswordByRecentPasswordTop3() {
+    private void removeRecentPasswordMoreThanThreeSize(List<UserRecentPassword> recentPasswords) {
+        if (recentPasswords.size() >= 3) {
+            UserRecentPassword userRecentPassword = recentPasswords.get(recentPasswords.size() - 1);
+            userRecentPasswordRepository.delete(userRecentPassword);
+        }
+    }
+
+    private void saveRecentPassword(User user, String password) {
+        UserRecentPassword userRecentPassword = new UserRecentPassword();
+        userRecentPassword.setUser(user);
+        userRecentPassword.savePassword(password);
+        userRecentPasswordRepository.save(userRecentPassword);
+    }
+
+    private void validatePasswordByRecentPassword(String password,
+        List<UserRecentPassword> userRecentPasswords) {
+        for (UserRecentPassword userRecentPassword : userRecentPasswords) {
+            if (passwordEncoder.matches(password, userRecentPassword.getPassword())) {
+                throw new PasswordIsRecentPasswordException("최근에 사용한적이 있는 비밀번호입니다.");
+            }
+        }
     }
 
     private void validatePasswordBySavedUser(UserPasswordRequestDto requestDto, User savedUser) {
@@ -110,7 +143,7 @@ public class UserService {
     }
 
     private static void validateAdmin(User user) {
-        if(!user.getRole().equals(UserRoleEnum.ADMIN)){
+        if (!user.getRole().equals(UserRoleEnum.ADMIN)) {
             throw new IsNotAdminUser("관리자가 아니기에 회원을 밴을 할 수 없습니다.");
         }
     }
