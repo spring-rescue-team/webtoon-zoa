@@ -1,6 +1,7 @@
 package com.project.webtoonzoa.controller;
 
 import com.project.webtoonzoa.dto.user.SignUpRequestDto;
+import com.project.webtoonzoa.dto.user.UserBannedResponseDto;
 import com.project.webtoonzoa.dto.user.UserInfoRequestDto;
 import com.project.webtoonzoa.dto.user.UserInfoResponseDto;
 import com.project.webtoonzoa.dto.user.UserPasswordRequestDto;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -74,6 +76,26 @@ public class UserController {
             .message("로그아웃 되었습니다.")
             .status(HttpStatus.OK.value())
             .build()
+        );
+    }
+
+    @PutMapping("/users/{userId}/bans")
+    public ResponseEntity<CommonResponse<UserBannedResponseDto>> banUser(
+        @PathVariable Long userId,
+        @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        UserBannedResponseDto userBannedResponseDto = userService.banUser(userId,
+            userDetails.getUser());
+        return ResponseEntity.status(HttpStatus.OK.value()).body(
+            CommonResponse.<UserBannedResponseDto>builder()
+                .message(
+                    userBannedResponseDto.isBanned() ?
+                        "회원이 차단되었습니다."
+                        : "회원의 차단이 풀렸습니다"
+                )
+                .status(HttpStatus.OK.value())
+                .data(userBannedResponseDto)
+                .build()
         );
     }
 
