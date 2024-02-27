@@ -3,7 +3,6 @@ package com.project.webtoonzoa.service;
 import com.project.webtoonzoa.dto.WebtoonLikesResponseDto;
 import com.project.webtoonzoa.dto.WebtoonRequestDto;
 import com.project.webtoonzoa.dto.WebtoonResponseDto;
-import com.project.webtoonzoa.entity.CommentLikes;
 import com.project.webtoonzoa.entity.User;
 import com.project.webtoonzoa.entity.Webtoon;
 import com.project.webtoonzoa.entity.WebtoonLikes;
@@ -76,6 +75,7 @@ public class WebtoonService {
             throw new AccessDeniedException("웹툰 작성자가 아닙니다");
         }
     }
+
     private User checkExistUser(User user) {
         return userRepository.findById(user.getId()).orElseThrow(
             () -> new NoSuchElementException("유저가 존재하지 않습니다."));
