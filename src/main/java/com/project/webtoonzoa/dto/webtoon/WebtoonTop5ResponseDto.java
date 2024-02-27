@@ -6,6 +6,7 @@ import lombok.Getter;
 
 @Getter
 public class WebtoonTop5ResponseDto {
+
     private Long id;
     private String title;
     private String description;
@@ -14,7 +15,8 @@ public class WebtoonTop5ResponseDto {
     private Day day;
     private Long likes;
 
-    public WebtoonTop5ResponseDto(Long id, String title, String description, Category category, String author, Day day, Long likes){
+    public WebtoonTop5ResponseDto(Long id, String title, String description, Category category,
+        String author, Day day, Long likes) {
         this.id = id;
         this.title = title;
         this.description = description;

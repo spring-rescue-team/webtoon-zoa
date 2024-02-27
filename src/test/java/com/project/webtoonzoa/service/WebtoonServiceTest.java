@@ -198,13 +198,20 @@ class WebtoonServiceTest {
     @Nested
     @DisplayName("웹툰 좋아요 Top5 조회")
     class top5Webtoon {
+
         List<WebtoonTop5ResponseDto> top5Webtoons;
 
-        WebtoonTop5ResponseDto webtoon1 = new WebtoonTop5ResponseDto(1L, "Webtoon 1", "Description 1", Category.SF, "Author 1", Day.MON, 100L);
-        WebtoonTop5ResponseDto webtoon2 = new WebtoonTop5ResponseDto(2L, "Webtoon 2", "Description 2", Category.FANTASY, "Author 2", Day.THU, 90L);
-        WebtoonTop5ResponseDto webtoon3 = new WebtoonTop5ResponseDto(3L, "Webtoon 3", "Description 3", Category.HORROR, "Author 3", Day.WED, 80L);
-        WebtoonTop5ResponseDto webtoon4 = new WebtoonTop5ResponseDto(4L, "Webtoon 4", "Description 4", Category.LOVECOMEDY, "Author 4", Day.THU, 70L);
-        WebtoonTop5ResponseDto webtoon5 = new WebtoonTop5ResponseDto(5L, "Webtoon 5", "Description 5", Category.COMEDY, "Author 5", Day.FRI, 60L);
+        WebtoonTop5ResponseDto webtoon1 = new WebtoonTop5ResponseDto(1L, "Webtoon 1",
+            "Description 1", Category.SF, "Author 1", Day.MON, 100L);
+        WebtoonTop5ResponseDto webtoon2 = new WebtoonTop5ResponseDto(2L, "Webtoon 2",
+            "Description 2", Category.FANTASY, "Author 2", Day.THU, 90L);
+        WebtoonTop5ResponseDto webtoon3 = new WebtoonTop5ResponseDto(3L, "Webtoon 3",
+            "Description 3", Category.HORROR, "Author 3", Day.WED, 80L);
+        WebtoonTop5ResponseDto webtoon4 = new WebtoonTop5ResponseDto(4L, "Webtoon 4",
+            "Description 4", Category.LOVECOMEDY, "Author 4", Day.THU, 70L);
+        WebtoonTop5ResponseDto webtoon5 = new WebtoonTop5ResponseDto(5L, "Webtoon 5",
+            "Description 5", Category.COMEDY, "Author 5", Day.FRI, 60L);
+
         @BeforeEach
         void setup() {
             top5Webtoons = Arrays.asList(webtoon1, webtoon2, webtoon3, webtoon4, webtoon5);
