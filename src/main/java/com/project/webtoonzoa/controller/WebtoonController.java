@@ -1,10 +1,8 @@
 package com.project.webtoonzoa.controller;
 
-import com.project.webtoonzoa.dto.CommonResponse;
-import com.project.webtoonzoa.dto.WebtoonLikesResponseDto;
-import com.project.webtoonzoa.dto.WebtoonRequestDto;
-import com.project.webtoonzoa.dto.WebtoonResponseDto;
-import com.project.webtoonzoa.entity.User;
+import com.project.webtoonzoa.dto.webtoon.WebtoonRequestDto;
+import com.project.webtoonzoa.dto.webtoon.WebtoonResponseDto;
+import com.project.webtoonzoa.global.response.CommonResponse;
 import com.project.webtoonzoa.global.util.UserDetailsImpl;
 import com.project.webtoonzoa.service.WebtoonService;
 import java.util.List;
@@ -56,11 +54,12 @@ public class WebtoonController {
         );
     }
 
-    @GetMapping("/{webtoonid}")
-    public ResponseEntity<CommonResponse<WebtoonResponseDto>> readWebtoon(
-        @PathVariable Long webtoonid) {
 
-        WebtoonResponseDto webtoonResponseDto = webtoonService.readWebtoon(webtoonid);
+    @GetMapping("/{webtoonId}")
+    public ResponseEntity<CommonResponse<WebtoonResponseDto>> readWebtoon(
+        @PathVariable Long webtoonId) {
+
+        WebtoonResponseDto webtoonResponseDto = webtoonService.readWebtoon(webtoonId);
 
         return ResponseEntity.status(HttpStatus.OK.value()).body(
             CommonResponse.<WebtoonResponseDto>builder()
@@ -71,14 +70,14 @@ public class WebtoonController {
         );
     }
 
-    @PutMapping("/{webtoonid}")
+    @PutMapping("/{webtoonId}")
     public ResponseEntity<CommonResponse<WebtoonResponseDto>> updateWebtoon(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
-        @PathVariable Long webtoonid,
+        @PathVariable Long webtoonId,
         @RequestBody WebtoonRequestDto requestDto) {
 
         WebtoonResponseDto responseDto = webtoonService.updateWebtoon(userDetails.getUser(),
-            webtoonid, requestDto);
+            webtoonId, requestDto);
 
         return ResponseEntity.status(HttpStatus.OK.value()).body(
             CommonResponse.<WebtoonResponseDto>builder()
@@ -89,16 +88,17 @@ public class WebtoonController {
         );
     }
 
-    @DeleteMapping("/{webtoonid}")
-    public ResponseEntity<CommonResponse<WebtoonResponseDto>> deleteWebtoon(
-        @AuthenticationPrincipal UserDetailsImpl userDetails,
-        @PathVariable Long webtoonid) {
 
-        WebtoonResponseDto responseDto = webtoonService.deleteWebtoon(userDetails.getUser(),
-            webtoonid);
+    @DeleteMapping("/{webtoonId}")
+    public ResponseEntity<CommonResponse<Long>> deleteWebtoon(
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
+        @PathVariable Long webtoonId) {
+
+        Long responseDto = webtoonService.deleteWebtoon(userDetails.getUser(),
+            webtoonId);
 
         return ResponseEntity.status(HttpStatus.OK.value()).body(
-            CommonResponse.<WebtoonResponseDto>builder()
+            CommonResponse.<Long>builder()
                 .status(HttpStatus.OK.value())
                 .message("웹툰 삭제 성공")
                 .data(responseDto)
@@ -106,7 +106,7 @@ public class WebtoonController {
         );
     }
 
-    @PostMapping("/{webtoonid}/likes")
+    @PostMapping("/{webtoonId}/likes")
     public ResponseEntity<CommonResponse<WebtoonLikesResponseDto>> createWebtoonLikes(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @PathVariable(name = "webtoonId") Long webtoonId) {
@@ -119,7 +119,7 @@ public class WebtoonController {
         );
     }
 
-    @DeleteMapping("/{webtoonid}/likes")
+    @DeleteMapping("/{webtoonId}/likes")
     public ResponseEntity<CommonResponse<WebtoonLikesResponseDto>> deleteWebtoonLikes(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @PathVariable(name = "webtoonId") Long webtoonId) {

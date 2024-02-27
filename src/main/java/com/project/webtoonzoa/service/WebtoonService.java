@@ -1,13 +1,14 @@
 package com.project.webtoonzoa.service;
 
 import com.project.webtoonzoa.dto.WebtoonLikesResponseDto;
-import com.project.webtoonzoa.dto.WebtoonRequestDto;
-import com.project.webtoonzoa.dto.WebtoonResponseDto;
-import com.project.webtoonzoa.entity.User;
-import com.project.webtoonzoa.entity.Webtoon;
 import com.project.webtoonzoa.entity.WebtoonLikes;
 import com.project.webtoonzoa.repository.UserRepository;
 import com.project.webtoonzoa.repository.WebtoonLikesRepository;
+import com.project.webtoonzoa.dto.webtoon.WebtoonRequestDto;
+import com.project.webtoonzoa.dto.webtoon.WebtoonResponseDto;
+import com.project.webtoonzoa.entity.Enum.UserRoleEnum;
+import com.project.webtoonzoa.entity.User;
+import com.project.webtoonzoa.entity.Webtoon;
 import com.project.webtoonzoa.repository.WebtoonRepository;
 import jakarta.transaction.Transactional;
 import java.util.List;
@@ -26,14 +27,16 @@ public class WebtoonService {
     private final WebtoonLikesRepository webtoonLikesRepository;
     private final UserRepository userRepository;
 
+
     @Transactional
     public WebtoonResponseDto createWebtoon(User user, WebtoonRequestDto requestDto) {
+        checkRole(user);
         Webtoon savedWebtoon = webtoonRepository.save(new Webtoon(requestDto));
         return new WebtoonResponseDto(savedWebtoon);
     }
 
     public List<WebtoonResponseDto> findAllWebtoon() {
-        List<Webtoon> webtoons = webtoonRepository.findAll();
+        List<Webtoon> webtoons = webtoonRepository.findAllByDeletedAtIsNull();
 
         return webtoons.stream()
             .map(WebtoonResponseDto::new)
@@ -41,39 +44,38 @@ public class WebtoonService {
     }
 
 
-    public WebtoonResponseDto readWebtoon(Long webtoonid) {
-        Webtoon webtoon = findWebtoon(webtoonid);
+    public WebtoonResponseDto readWebtoon(Long webtoonId) {
+        Webtoon webtoon = findWebtoon(webtoonId);
         return new WebtoonResponseDto(webtoon);
     }
 
     @Transactional
-    public WebtoonResponseDto updateWebtoon(User user, Long webtoonid,
+    public WebtoonResponseDto updateWebtoon(User user, Long webtoonId,
         WebtoonRequestDto requestDto) {
-        Webtoon webtoon = findWebtoon(webtoonid);
-        checkUser(webtoonid, user.getId());
+        checkRole(user);
+        Webtoon webtoon = findWebtoon(webtoonId);
 
         webtoon.update(requestDto);
         return new WebtoonResponseDto(webtoon);
     }
 
     @Transactional
-    public WebtoonResponseDto deleteWebtoon(User user, Long webtoonid) {
-        Webtoon webtoon = findWebtoon(webtoonid);
-        checkUser(webtoonid, user.getId());
-
-        webtoonRepository.delete(webtoon);
-        return new WebtoonResponseDto(webtoon);
+    public Long deleteWebtoon(User user, Long webtoonId) {
+        checkRole(user);
+        Webtoon webtoon = findWebtoon(webtoonId);
+        webtoon.softDelete();
+        return webtoon.getId();
     }
 
-    private Webtoon findWebtoon(Long webtoonid) {
-        return webtoonRepository.findById(webtoonid).orElseThrow(
-            () -> new NoSuchElementException("웹툰이 존재하지 않습니다."));
-    }
-
-    private void checkUser(Long webtoonid, Long Userid) {
-        if (!webtoonid.equals(Userid)) {
-            throw new AccessDeniedException("웹툰 작성자가 아닙니다");
+    private void checkRole(User user) {
+        if (user.getRole().equals(UserRoleEnum.ADMIN)) {
+            throw new AccessDeniedException("접근 권한이 없습니다.");
         }
+    }
+
+    private Webtoon findWebtoon(Long webtoonId) {
+        return webtoonRepository.findById(webtoonId).orElseThrow(
+            () -> new NoSuchElementException("웹툰이 존재하지 않습니다."));
     }
 
     private User checkExistUser(User user) {
@@ -111,4 +113,5 @@ public class WebtoonService {
 
         return new WebtoonLikesResponseDto(savedWebtoonLikes);
     }
+
 }
