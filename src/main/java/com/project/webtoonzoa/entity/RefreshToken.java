@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RefreshToken {
+public class RefreshToken extends TimeStampedByCreatedAt {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

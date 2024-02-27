@@ -4,18 +4,27 @@ package com.project.webtoonzoa.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import com.project.webtoonzoa.dto.user.SignUpRequestDto;
 import com.project.webtoonzoa.dto.user.UserInfoRequestDto;
 import com.project.webtoonzoa.dto.user.UserInfoResponseDto;
 import com.project.webtoonzoa.dto.user.UserPasswordRequestDto;
 import com.project.webtoonzoa.entity.Enum.UserRoleEnum;
+import com.project.webtoonzoa.entity.RefreshToken;
 import com.project.webtoonzoa.entity.User;
+import com.project.webtoonzoa.global.exception.EmailExistenceException;
 import com.project.webtoonzoa.global.exception.PasswordNotConfirmException;
 import com.project.webtoonzoa.global.exception.PasswordNotEqualException;
+import com.project.webtoonzoa.repository.RefreshTokenRepository;
 import com.project.webtoonzoa.repository.UserRecentPasswordRepository;
 import com.project.webtoonzoa.repository.UserRepository;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponseWrapper;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -39,6 +48,12 @@ class UserServiceTest {
 
     @Mock
     UserRecentPasswordRepository userRecentPasswordRepository;
+
+    @Mock
+    RefreshTokenRepository refreshTokenRepository;
+
+    @Mock
+    HttpServletResponse httpServletResponse;
 
     @InjectMocks
     UserService userService;
@@ -76,6 +91,17 @@ class UserServiceTest {
             //then
             assertEquals(user.getId(), id, "id가 같지 않습니다.");
 
+        }
+
+        @Test
+        @DisplayName("회원가입 실패")
+        void 회원가입_실패() {
+            //given
+            given(userRepository.findByEmail(anyString())).willReturn(Optional.of(user));
+            //when + then
+            assertThrows(EmailExistenceException.class, () -> {
+                userService.createUser(signUpRequestDto);
+            });
         }
 
 
@@ -147,6 +173,8 @@ class UserServiceTest {
                     user.getPassword())).willReturn(true);
                 //when
                 userService.updatePassword(userPasswordRequestDto, user);
+                //then
+                then(userRecentPasswordRepository).should().findAllByUserIdOrderByCreatedAtDesc(user.getId());
             }
 
             @Test
@@ -180,5 +208,23 @@ class UserServiceTest {
             }
         }
 
+    }
+
+    @Nested
+    @DisplayName("로그아웃")
+    class logout {
+
+        @Test
+        @DisplayName("로그아웃 성공")
+        public void 로그아웃() throws Exception {
+            //given
+            User user = new User();
+            RefreshToken refreshToken = new RefreshToken();
+            given(refreshTokenRepository.findByUserId(user.getId())).willReturn(refreshToken);
+            //when
+            userService.logoutUser(httpServletResponse, user);
+            //then
+            verify(refreshTokenRepository,times(1)).delete(refreshToken);
+        }
     }
 }

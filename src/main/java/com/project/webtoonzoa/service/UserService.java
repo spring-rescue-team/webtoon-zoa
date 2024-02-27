@@ -9,6 +9,7 @@ import com.project.webtoonzoa.entity.Enum.UserRoleEnum;
 import com.project.webtoonzoa.entity.RefreshToken;
 import com.project.webtoonzoa.entity.User;
 import com.project.webtoonzoa.entity.UserRecentPassword;
+import com.project.webtoonzoa.global.exception.EmailExistenceException;
 import com.project.webtoonzoa.global.exception.IsNotAdminUser;
 import com.project.webtoonzoa.global.exception.PasswordIsRecentPasswordException;
 import com.project.webtoonzoa.global.exception.PasswordNotConfirmException;
@@ -19,9 +20,11 @@ import com.project.webtoonzoa.repository.RefreshTokenRepository;
 import com.project.webtoonzoa.repository.UserRecentPasswordRepository;
 import com.project.webtoonzoa.repository.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.constraints.Email;
 import java.sql.Ref;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,7 +39,8 @@ public class UserService {
     private final UserRecentPasswordRepository userRecentPasswordRepository;
     private final RefreshTokenRepository refreshTokenRepository;
 
-    private final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
+    @Value("${admin.token}")
+    private String ADMIN_TOKEN;
 
     @Transactional
     public Long createUser(SignUpRequestDto userRequestDto) {
@@ -45,6 +49,7 @@ public class UserService {
         String nickname = userRequestDto.getNickname();
         UserRoleEnum role = UserRoleEnum.USER;
         role = validateAdminToken(userRequestDto, role);
+        validateEmail(email);
         User user = User.builder()
             .email(email)
             .nickname(nickname)
@@ -54,6 +59,12 @@ public class UserService {
         User saveUser = userRepository.save(user);
         saveRecentPassword(saveUser, password);
         return saveUser.getId();
+    }
+
+    private void validateEmail(String email) {
+        if(userRepository.findByEmail(email).isPresent()){
+            throw new EmailExistenceException("중복된 이메일이 존재합니다!");
+        };
     }
 
     private UserRoleEnum validateAdminToken(SignUpRequestDto userRequestDto, UserRoleEnum role) {
