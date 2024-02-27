@@ -72,7 +72,7 @@ public class WebtoonService {
     }
 
     private void checkRole(User user) {
-        if (user.getRole().equals(UserRoleEnum.ADMIN)) {
+        if (!user.getRole().equals(UserRoleEnum.ADMIN)) {
             throw new AccessDeniedException("접근 권한이 없습니다.");
         }
     }

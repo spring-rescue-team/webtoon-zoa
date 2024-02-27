@@ -41,6 +41,7 @@ public class ControllerAdvice {
     public ResponseEntity<CommonResponse<String>> handleAccessDeniedException(
         AccessDeniedException e) {
         log.error("접근 권한 불일치 에러", e);
+
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
             CommonResponse.<String>builder()
                 .message(e.getMessage())
