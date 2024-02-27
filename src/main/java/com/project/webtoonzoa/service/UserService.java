@@ -6,6 +6,7 @@ import com.project.webtoonzoa.dto.user.UserInfoRequestDto;
 import com.project.webtoonzoa.dto.user.UserInfoResponseDto;
 import com.project.webtoonzoa.dto.user.UserPasswordRequestDto;
 import com.project.webtoonzoa.entity.Enum.UserRoleEnum;
+import com.project.webtoonzoa.entity.RefreshToken;
 import com.project.webtoonzoa.entity.User;
 import com.project.webtoonzoa.entity.UserRecentPassword;
 import com.project.webtoonzoa.global.exception.IsNotAdminUser;
@@ -14,9 +15,11 @@ import com.project.webtoonzoa.global.exception.PasswordNotConfirmException;
 import com.project.webtoonzoa.global.exception.PasswordNotEqualException;
 import com.project.webtoonzoa.global.exception.UserNotExistence;
 import com.project.webtoonzoa.global.util.JwtUtil;
+import com.project.webtoonzoa.repository.RefreshTokenRepository;
 import com.project.webtoonzoa.repository.UserRecentPasswordRepository;
 import com.project.webtoonzoa.repository.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
+import java.sql.Ref;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,6 +34,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserRecentPasswordRepository userRecentPasswordRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     private final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
 
@@ -61,8 +65,11 @@ public class UserService {
         return role;
     }
 
-    public void logoutUser(HttpServletResponse response) {
+    @Transactional
+    public void logoutUser(HttpServletResponse response, User user) {
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, null);
+        RefreshToken refreshToken = refreshTokenRepository.findByUserId(user.getId());
+        refreshTokenRepository.delete(refreshToken);
     }
 
     @Transactional

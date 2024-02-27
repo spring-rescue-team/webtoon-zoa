@@ -1,7 +1,6 @@
 package com.project.webtoonzoa.global.exception;
 
 import com.project.webtoonzoa.global.response.CommonResponse;
-import jakarta.validation.ConstraintViolationException;
 import java.nio.file.AccessDeniedException;
 import java.util.NoSuchElementException;
 import lombok.extern.slf4j.Slf4j;
