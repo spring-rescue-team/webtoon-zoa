@@ -1,5 +1,6 @@
 package com.project.webtoonzoa.controller;
 
+import com.project.webtoonzoa.dto.webtoon.WebtoonLikesResponseDto;
 import com.project.webtoonzoa.dto.webtoon.WebtoonRequestDto;
 import com.project.webtoonzoa.dto.webtoon.WebtoonResponseDto;
 import com.project.webtoonzoa.global.response.CommonResponse;
@@ -54,6 +55,7 @@ public class WebtoonController {
         );
     }
 
+
     @GetMapping("/{webtoonId}")
     public ResponseEntity<CommonResponse<WebtoonResponseDto>> readWebtoon(
         @PathVariable Long webtoonId) {
@@ -87,6 +89,7 @@ public class WebtoonController {
         );
     }
 
+
     @DeleteMapping("/{webtoonId}")
     public ResponseEntity<CommonResponse<Long>> deleteWebtoon(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -100,6 +103,32 @@ public class WebtoonController {
                 .status(HttpStatus.OK.value())
                 .message("웹툰 삭제 성공")
                 .data(responseDto)
+                .build()
+        );
+    }
+
+    @PostMapping("/{webtoonId}/likes")
+    public ResponseEntity<CommonResponse<WebtoonLikesResponseDto>> createWebtoonLikes(
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
+        @PathVariable(name = "webtoonId") Long webtoonId) {
+        return ResponseEntity.status(HttpStatus.OK).body(
+            CommonResponse.<WebtoonLikesResponseDto>builder()
+                .status(HttpStatus.OK.value())
+                .message("댓글 좋아요 성공")
+                .data(webtoonService.createWebtoonLikes(userDetails.getUser(), webtoonId))
+                .build()
+        );
+    }
+
+    @DeleteMapping("/{webtoonId}/likes")
+    public ResponseEntity<CommonResponse<WebtoonLikesResponseDto>> deleteWebtoonLikes(
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
+        @PathVariable(name = "webtoonId") Long webtoonId) {
+        return ResponseEntity.status(HttpStatus.OK).body(
+            CommonResponse.<WebtoonLikesResponseDto>builder()
+                .status(HttpStatus.OK.value())
+                .message("댓글 좋아요 취소 성공")
+                .data(webtoonService.deleteWebtoonLikes(userDetails.getUser(), webtoonId))
                 .build()
         );
     }
