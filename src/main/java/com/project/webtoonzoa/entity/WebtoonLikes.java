@@ -26,4 +26,9 @@ public class WebtoonLikes extends TimeStamped {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "webtoon_id")
     private Webtoon webtoon;
+
+    public WebtoonLikes(User user, Webtoon webtoon) {
+        this.user = user;
+        this.webtoon = webtoon;
+    }
 }

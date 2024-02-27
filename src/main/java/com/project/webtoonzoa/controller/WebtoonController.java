@@ -1,8 +1,10 @@
 package com.project.webtoonzoa.controller;
 
 import com.project.webtoonzoa.dto.CommonResponse;
+import com.project.webtoonzoa.dto.WebtoonLikesResponseDto;
 import com.project.webtoonzoa.dto.WebtoonRequestDto;
 import com.project.webtoonzoa.dto.WebtoonResponseDto;
+import com.project.webtoonzoa.entity.User;
 import com.project.webtoonzoa.global.util.UserDetailsImpl;
 import com.project.webtoonzoa.service.WebtoonService;
 import java.util.List;
@@ -100,6 +102,32 @@ public class WebtoonController {
                 .status(HttpStatus.OK.value())
                 .message("웹툰 삭제 성공")
                 .data(responseDto)
+                .build()
+        );
+    }
+
+    @PostMapping("/{webtoonid}/likes")
+    public ResponseEntity<CommonResponse<WebtoonLikesResponseDto>> createWebtoonLikes(
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
+        @PathVariable(name = "webtoonId") Long webtoonId) {
+        return ResponseEntity.status(HttpStatus.OK).body(
+            CommonResponse.<WebtoonLikesResponseDto>builder()
+                .status(HttpStatus.OK.value())
+                .message("댓글 좋아요 성공")
+                .data(webtoonService.createWebtoonLikes(new User(), webtoonId))
+                .build()
+        );
+    }
+
+    @DeleteMapping("/{webtoonid}/likes")
+    public ResponseEntity<CommonResponse<WebtoonLikesResponseDto>> deleteWebtoonLikes(
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
+        @PathVariable(name = "webtoonId") Long webtoonId) {
+        return ResponseEntity.status(HttpStatus.OK).body(
+            CommonResponse.<WebtoonLikesResponseDto>builder()
+                .status(HttpStatus.OK.value())
+                .message("댓글 좋아요 취소 성공")
+                .data(webtoonService.deleteWebtoonLikes(new User(), webtoonId))
                 .build()
         );
     }
