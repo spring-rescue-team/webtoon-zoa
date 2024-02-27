@@ -7,6 +7,7 @@ import static org.mockito.BDDMockito.given;
 
 import com.project.webtoonzoa.dto.webtoon.WebtoonRequestDto;
 import com.project.webtoonzoa.dto.webtoon.WebtoonResponseDto;
+import com.project.webtoonzoa.dto.webtoon.WebtoonTop5ResponseDto;
 import com.project.webtoonzoa.entity.Enum.Category;
 import com.project.webtoonzoa.entity.Enum.Day;
 import com.project.webtoonzoa.entity.Enum.UserRoleEnum;
@@ -14,6 +15,7 @@ import com.project.webtoonzoa.entity.User;
 import com.project.webtoonzoa.entity.Webtoon;
 import com.project.webtoonzoa.repository.WebtoonRepository;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -190,6 +192,40 @@ class WebtoonServiceTest {
             assertEquals(webtoon.getCategory(), responseDto.getCategory(), "category 가 다릅니다");
             assertEquals(webtoon.getAuthor(), responseDto.getAuthor(), "author 가 다릅니다");
             assertEquals(webtoon.getDay(), responseDto.getDay(), "day 가 다릅니다");
+        }
+    }
+
+    @Nested
+    @DisplayName("웹툰 좋아요 Top5 조회")
+    class top5Webtoon {
+        List<WebtoonTop5ResponseDto> top5Webtoons;
+
+        WebtoonTop5ResponseDto webtoon1 = new WebtoonTop5ResponseDto(1L, "Webtoon 1", "Description 1", Category.SF, "Author 1", Day.MON, 100L);
+        WebtoonTop5ResponseDto webtoon2 = new WebtoonTop5ResponseDto(2L, "Webtoon 2", "Description 2", Category.FANTASY, "Author 2", Day.THU, 90L);
+        WebtoonTop5ResponseDto webtoon3 = new WebtoonTop5ResponseDto(3L, "Webtoon 3", "Description 3", Category.HORROR, "Author 3", Day.WED, 80L);
+        WebtoonTop5ResponseDto webtoon4 = new WebtoonTop5ResponseDto(4L, "Webtoon 4", "Description 4", Category.LOVECOMEDY, "Author 4", Day.THU, 70L);
+        WebtoonTop5ResponseDto webtoon5 = new WebtoonTop5ResponseDto(5L, "Webtoon 5", "Description 5", Category.COMEDY, "Author 5", Day.FRI, 60L);
+        @BeforeEach
+        void setup() {
+            top5Webtoons = Arrays.asList(webtoon1, webtoon2, webtoon3, webtoon4, webtoon5);
+        }
+
+        @Test
+        @DisplayName("웹툰 Top5 조회 성공")
+        void successTop5() {
+            // given
+            given(webtoonRepository.findTop5ByOrderByWebtoonLikesDesc()).willReturn(top5Webtoons);
+
+            // when
+            List<WebtoonTop5ResponseDto> resultList = webtoonService.findTop5PopularWebtoons();
+
+            // then
+            assertEquals(5, resultList.size());
+            assertEquals(webtoon1, resultList.get(0));
+            assertEquals(webtoon2, resultList.get(1));
+            assertEquals(webtoon3, resultList.get(2));
+            assertEquals(webtoon4, resultList.get(3));
+            assertEquals(webtoon5, resultList.get(4));
         }
     }
 
