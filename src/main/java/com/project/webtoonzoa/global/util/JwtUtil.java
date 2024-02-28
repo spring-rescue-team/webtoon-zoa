@@ -32,14 +32,15 @@ public class JwtUtil {
     // Token 식별자
     public static final String BEARER_PREFIX = "Bearer ";
     // 토큰 만료시간
-    private final long TOKEN_TIME = 60 * 60 * 1000L; // 60분
+    private final long ACCESS_TOKEN_TIME = 60 * 60 * 1000L; // 60분
+    private final long REFRESH_TOKEN_TIME = 30 * 24 * 60 * 60 * 1000L; // 30일
 
     @Value("${jwt.secret.key}") // Base64 Encode 한 SecretKey
     private String secretKey;
     private Key key;
     private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
-    // 로그 설정
+
     public static final Logger logger = LoggerFactory.getLogger("JWT 관련 로그");
 
     // 생성자 호출 이후에 실행되는 init
@@ -50,16 +51,29 @@ public class JwtUtil {
     }
 
     // 토큰 생성
-    public String createToken(String username, UserRoleEnum role) {
+    public String createAccessToken(String username, UserRoleEnum role) {
         Date date = new Date();
 
         return BEARER_PREFIX +
             Jwts.builder()
                 .setSubject(username) // 사용자 식별자값(ID)
                 .claim(AUTHORIZATION_KEY, role)
-                .setExpiration(new Date(date.getTime() + TOKEN_TIME)) // 만료 시간
+                .setExpiration(new Date(date.getTime() + ACCESS_TOKEN_TIME)) // 만료 시간
                 .setIssuedAt(date) // 발급일
                 .signWith(key, signatureAlgorithm) // 암호화 알고리즘
+                .compact();
+    }
+
+    public String createRefreshToken(String username, UserRoleEnum role) {
+        Date date = new Date();
+
+        return BEARER_PREFIX +
+            Jwts.builder()
+                .setSubject(username)
+                .claim(AUTHORIZATION_KEY, role)
+                .setExpiration(new Date(date.getTime() + REFRESH_TOKEN_TIME))
+                .setIssuedAt(date)
+                .signWith(key, signatureAlgorithm)
                 .compact();
     }
 
@@ -73,20 +87,21 @@ public class JwtUtil {
     }
 
     // 토큰 검증
-    public boolean validateToken(String token) {
+    public int validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-            return true;
-        } catch (SecurityException | MalformedJwtException | SignatureException e) {
-            logger.error("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
+            return 0;
         } catch (ExpiredJwtException e) {
             logger.error("Expired JWT token, 만료된 JWT token 입니다.");
+            return 1;
+        } catch (SecurityException | MalformedJwtException | SignatureException e) {
+            logger.error("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
         } catch (UnsupportedJwtException e) {
             logger.error("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.");
         } catch (IllegalArgumentException e) {
             logger.error("JWT claims is empty, 잘못된 JWT 토큰 입니다.");
         }
-        return false;
+        return 2;
     }
 
     // 토큰에서 사용자 정보 가져오기
@@ -100,5 +115,13 @@ public class JwtUtil {
             return bearerToken.substring(7);
         }
         return null;
+    }
+
+    public Claims getUserInfoFromExpiredToken(String token) {
+        try {
+            return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+        } catch (ExpiredJwtException e) {
+            return e.getClaims();
+        }
     }
 }

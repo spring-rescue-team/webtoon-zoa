@@ -25,10 +25,58 @@ public class ControllerAdvice {
         );
     }
 
+    @ExceptionHandler(UserNotExistence.class)
+    public ResponseEntity<CommonResponse<String>> handleValidationException(
+        UserNotExistence e) {
+        log.error("회원 에러", e);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+            CommonResponse.<String>builder()
+                .message(e.getMessage())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .build()
+        );
+    }
+
     @ExceptionHandler(PasswordNotConfirmException.class)
     public ResponseEntity<CommonResponse<String>> handleValidationException(
         PasswordNotConfirmException e) {
         log.error("변경 비밀번호 불일치 에러", e);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+            CommonResponse.<String>builder()
+                .message(e.getMessage())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .build()
+        );
+    }
+
+    @ExceptionHandler(PasswordIsRecentPasswordException.class)
+    public ResponseEntity<CommonResponse<String>> handleValidationException(
+        PasswordIsRecentPasswordException e) {
+        log.error("최근 사용한 비밀번호 에러", e);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+            CommonResponse.<String>builder()
+                .message(e.getMessage())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .build()
+        );
+    }
+
+    @ExceptionHandler(EmailExistenceException.class)
+    public ResponseEntity<CommonResponse<String>> handleValidationException(
+        EmailExistenceException e) {
+        log.error("이메일 중복 에러", e);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+            CommonResponse.<String>builder()
+                .message(e.getMessage())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .build()
+        );
+    }
+
+    @ExceptionHandler(IsNotAdminUser.class)
+    public ResponseEntity<CommonResponse<String>> handleValidationException(
+        IsNotAdminUser e) {
+        log.error("관리자 불일치 에러", e);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
             CommonResponse.<String>builder()
                 .message(e.getMessage())
