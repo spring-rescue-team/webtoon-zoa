@@ -39,6 +39,12 @@ public class User extends TimeStamped {
 
     private boolean banned;
 
+    private String imagePath;
+
+    public void updateImagePath(String imagePath){
+        this.imagePath = imagePath;
+    }
+
     public void updateBanned() {
         this.banned = !banned;
     }

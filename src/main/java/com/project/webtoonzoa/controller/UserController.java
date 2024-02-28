@@ -5,6 +5,7 @@ import com.project.webtoonzoa.dto.user.UserBannedResponseDto;
 import com.project.webtoonzoa.dto.user.UserInfoRequestDto;
 import com.project.webtoonzoa.dto.user.UserInfoResponseDto;
 import com.project.webtoonzoa.dto.user.UserPasswordRequestDto;
+import com.project.webtoonzoa.dto.user.UserResponseDto;
 import com.project.webtoonzoa.global.response.CommonResponse;
 import com.project.webtoonzoa.global.response.ErrorResponse;
 import com.project.webtoonzoa.global.util.UserDetailsImpl;
@@ -13,12 +14,14 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -113,6 +116,19 @@ public class UserController {
             );
         }
         return null;
+    }
+
+    @GetMapping("/users")
+    public ResponseEntity<CommonResponse<List<UserResponseDto>>> getUser(
+        @AuthenticationPrincipal UserDetailsImpl userDetails
+    ){
+        return ResponseEntity.status(HttpStatus.OK.value()).body(
+            CommonResponse.<List<UserResponseDto>>builder()
+                .message("회원이 조회되었습니다.")
+                .status(HttpStatus.OK.value())
+                .data(userService.getUsers(userDetails.getUser()))
+                .build()
+        );
     }
 
     @PostMapping("/users/logout")

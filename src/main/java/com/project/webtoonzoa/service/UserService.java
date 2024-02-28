@@ -5,6 +5,7 @@ import com.project.webtoonzoa.dto.user.UserBannedResponseDto;
 import com.project.webtoonzoa.dto.user.UserInfoRequestDto;
 import com.project.webtoonzoa.dto.user.UserInfoResponseDto;
 import com.project.webtoonzoa.dto.user.UserPasswordRequestDto;
+import com.project.webtoonzoa.dto.user.UserResponseDto;
 import com.project.webtoonzoa.entity.Enum.UserRoleEnum;
 import com.project.webtoonzoa.entity.RefreshToken;
 import com.project.webtoonzoa.entity.User;
@@ -160,9 +161,15 @@ public class UserService {
             .orElseThrow(() -> new UserNotExistence("존재하지 않는 회원입니다."));
     }
 
-    private static void validateAdmin(User user) {
+    public List<UserResponseDto> getUsers(User user) {
+        validateAdmin(user);
+        List<User> users = userRepository.findAll();
+        return users.stream().map(UserResponseDto::new).toList();
+    }
+
+    private void validateAdmin(User user) {
         if (!user.getRole().equals(UserRoleEnum.ADMIN)) {
-            throw new IsNotAdminUser("관리자가 아니기에 회원을 밴을 할 수 없습니다.");
+            throw new IsNotAdminUser("관리자가 권한이 없습니다.");
         }
     }
 }
