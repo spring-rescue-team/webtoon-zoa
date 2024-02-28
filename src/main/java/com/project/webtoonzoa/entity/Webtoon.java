@@ -46,6 +46,9 @@ public class Webtoon extends TimeStamped {
     @Enumerated(value = EnumType.STRING)
     private Day day;
 
+    @Column(nullable = false, name = "likes")
+    private Long likes;
+
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
@@ -55,6 +58,7 @@ public class Webtoon extends TimeStamped {
         this.category = requestDto.getCategory();
         this.author = requestDto.getAuthor();
         this.day = requestDto.getDay();
+        this.likes = 0L;
     }
 
     public void update(WebtoonRequestDto requestDto) {
@@ -67,5 +71,15 @@ public class Webtoon extends TimeStamped {
 
     public void softDelete() {
         this.deletedAt = LocalDateTime.now();
+    }
+
+    public void increaseLikes() {
+        this.likes++;
+    }
+
+    public void decreaseLikes() {
+        if (this.likes > 0) {
+            this.likes--;
+        }
     }
 }
