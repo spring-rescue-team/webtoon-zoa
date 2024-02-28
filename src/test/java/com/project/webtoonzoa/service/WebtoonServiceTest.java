@@ -14,7 +14,6 @@ import com.project.webtoonzoa.entity.User;
 import com.project.webtoonzoa.entity.Webtoon;
 import com.project.webtoonzoa.repository.WebtoonRepository;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -195,6 +194,7 @@ class WebtoonServiceTest {
     @Nested
     @DisplayName("웹툰 좋아요 Top5 조회")
     class top5Webtoon {
+
         Webtoon webtoon1, webtoon2, webtoon3, webtoon4, webtoon5;
         List<Webtoon> top5Webtoons = new ArrayList<>();
 
