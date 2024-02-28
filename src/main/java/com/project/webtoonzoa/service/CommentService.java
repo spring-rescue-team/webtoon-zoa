@@ -13,9 +13,11 @@ import com.project.webtoonzoa.repository.CommentLikesRepository;
 import com.project.webtoonzoa.repository.CommentRepository;
 import com.project.webtoonzoa.repository.UserRepository;
 import com.project.webtoonzoa.repository.WebtoonRepository;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.AccessDeniedException;
@@ -36,17 +38,38 @@ public class CommentService {
     public CommentResponseDto createComment(User user, Long webtoonId,
         CommentRequestDto requestDto) {
         Webtoon webtoon = checkExistWebtoon(webtoonId);
-        Comment savedComment = commentRepository.save(new Comment(requestDto, user, webtoon));
+        Comment savedComment;
+        if (requestDto.getParentId() != null) {
+            Comment parentComment = checkExistComment(requestDto.getParentId());
+            savedComment = commentRepository.save(
+                new Comment(requestDto, user, webtoon, parentComment));
+        } else {
+            savedComment = commentRepository.save(new Comment(requestDto, user, webtoon));
+        }
         return new CommentResponseDto(savedComment);
     }
 
-
     public List<CommentDetailResponseDto> readComment(Long webtoonId) {
         checkExistWebtoon(webtoonId);
-        return commentRepository.findByWebtoonIdAndDeletedAtIsNullOrderByCreatedAtAsc(webtoonId)
-            .stream()
-            .map(comment -> new CommentDetailResponseDto(comment))
-            .collect(Collectors.toList());
+
+        List<Comment> comments = commentRepository.findAllCommentByWebtoonId(webtoonId);
+
+        List<CommentDetailResponseDto> commentResponseDTOList = new ArrayList<>();
+        Map<Long, CommentDetailResponseDto> commentDTOHashMap = new HashMap<>();
+
+        comments.forEach(c -> {
+            CommentDetailResponseDto commentResponseDTO = new CommentDetailResponseDto(c);
+            if (c.getDeletedAt() != null) {
+                commentResponseDTO.setContent("삭제된 댓글입니다.");
+            }
+            commentDTOHashMap.put(commentResponseDTO.getId(), commentResponseDTO);
+            if (c.getParent() != null) {
+                commentDTOHashMap.get(c.getParent().getId()).getChildren().add(commentResponseDTO);
+            } else {
+                commentResponseDTOList.add(commentResponseDTO);
+            }
+        });
+        return commentResponseDTOList;
     }
 
     @Transactional

@@ -9,7 +9,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -36,16 +39,30 @@ public class Comment extends TimeStamped {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "webtonn_id")
+    @JoinColumn(name = "webtoon_id")
     private Webtoon webtoon;
 
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_id")
+    private Comment parent;
+
+    @OneToMany(mappedBy = "parent")
+    private List<Comment> children = new ArrayList<>();
+
     public Comment(CommentRequestDto requestDto, User user, Webtoon webtoon) {
         this.content = requestDto.getContent();
         this.user = user;
         this.webtoon = webtoon;
+    }
+
+    public Comment(CommentRequestDto requestDto, User user, Webtoon webtoon, Comment parent) {
+        this.content = requestDto.getContent();
+        this.user = user;
+        this.webtoon = webtoon;
+        this.parent = parent;
     }
 
     public void update(CommentRequestDto requestDto) {
