@@ -92,10 +92,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     private boolean validateRefreshToken(HttpServletResponse response, UserDetailsImpl user)
         throws IOException {
         if (refreshTokenRepository.findByUserId(user.getUser().getId()) != null) {
-            String jsonResponse = new ObjectMapper().writeValueAsString(CommonResponse.<Void>builder()
-                .message("이미 로그인이 되어있어 refresh token이 존재하는 상태입니다. Access token을 사용하여 진행해주세요!")
-                .status(HttpStatus.BAD_REQUEST.value())
-                .build()
+            String jsonResponse = new ObjectMapper().writeValueAsString(
+                CommonResponse.<Void>builder()
+                    .message("이미 로그인이 되어있어 refresh token이 존재하는 상태입니다. Access token을 사용하여 진행해주세요!")
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .build()
             );
 
             response.setStatus(HttpStatus.BAD_REQUEST.value());

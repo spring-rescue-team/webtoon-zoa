@@ -1,6 +1,5 @@
 package com.project.webtoonzoa.entity;
 
-import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -28,7 +27,7 @@ public class RefreshToken extends TimeStampedByCreatedAt {
     @Column(nullable = false)
     private String refreshToken;
 
-    public RefreshToken(User user, String refreshToken){
+    public RefreshToken(User user, String refreshToken) {
         this.user = user;
         this.refreshToken = refreshToken;
     }

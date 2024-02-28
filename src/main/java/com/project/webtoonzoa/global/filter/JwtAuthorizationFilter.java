@@ -32,7 +32,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private final UserDetailsServiceImpl userDetailsService;
     private final RefreshTokenRepository refreshTokenRepository;
 
-    public JwtAuthorizationFilter(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService, RefreshTokenRepository refreshTokenRepository) {
+    public JwtAuthorizationFilter(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService,
+        RefreshTokenRepository refreshTokenRepository) {
         this.jwtUtil = jwtUtil;
         this.userDetailsService = userDetailsService;
         this.refreshTokenRepository = refreshTokenRepository;
@@ -45,20 +46,24 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         String tokenValue = jwtUtil.getJwtFromHeader(req);
 
         if (StringUtils.hasText(tokenValue)) {
-            int tokenStatus =  jwtUtil.validateToken(tokenValue);
+            int tokenStatus = jwtUtil.validateToken(tokenValue);
             // 0 이면 정상적인 토큰
             // 1 이면 기간만 만료된 토큰
             // 2 이면 비장상적인 토큰
             if (tokenStatus == 1) {
-                try{
+                try {
                     Claims info = jwtUtil.getUserInfoFromExpiredToken(tokenValue);
-                    UserDetailsImpl userDetails = (UserDetailsImpl) userDetailsService.loadUserByUsername(info.getSubject());
+                    UserDetailsImpl userDetails = (UserDetailsImpl) userDetailsService.loadUserByUsername(
+                        info.getSubject());
                     User user = userDetails.getUser();
-                    RefreshToken refreshToken = refreshTokenRepository.findByUserId(userDetails.getUser().getId());
-                    if (refreshToken != null && jwtUtil.validateToken(refreshToken.getRefreshToken()) == 0){
-                        String newAccessToken = jwtUtil.createAccessToken(user.getEmail(), user.getRole());
-                        res.addHeader(JwtUtil.AUTHORIZATION_HEADER,newAccessToken);
-                    }else{
+                    RefreshToken refreshToken = refreshTokenRepository.findByUserId(
+                        userDetails.getUser().getId());
+                    if (refreshToken != null
+                        && jwtUtil.validateToken(refreshToken.getRefreshToken()) == 0) {
+                        String newAccessToken = jwtUtil.createAccessToken(user.getEmail(),
+                            user.getRole());
+                        res.addHeader(JwtUtil.AUTHORIZATION_HEADER, newAccessToken);
+                    } else {
                         res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
                         String jsonResponse = new ObjectMapper().writeValueAsString(
@@ -71,17 +76,17 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                         refreshTokenRepository.delete(refreshToken);
                         return;
                     }
-                }catch(Exception e){
+                } catch (Exception e) {
                     logger.error(e.getMessage());
                     logger.error("JWT 인가 오류");
                     return;
                 }
-            }
-            else if(tokenStatus == 2){
-                String jsonResponse = new ObjectMapper().writeValueAsString(CommonResponse.<Void>builder()
-                    .message("검증 되지 않은 토큰이거나 토큰이 존재 하지 않습니다.")
-                    .status(HttpStatus.BAD_REQUEST.value())
-                    .build()
+            } else if (tokenStatus == 2) {
+                String jsonResponse = new ObjectMapper().writeValueAsString(
+                    CommonResponse.<Void>builder()
+                        .message("검증 되지 않은 토큰이거나 토큰이 존재 하지 않습니다.")
+                        .status(HttpStatus.BAD_REQUEST.value())
+                        .build()
                 );
                 res.setContentType(MediaType.APPLICATION_JSON_VALUE);
                 res.setCharacterEncoding("UTF-8");

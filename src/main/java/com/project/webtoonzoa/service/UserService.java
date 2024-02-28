@@ -21,9 +21,7 @@ import com.project.webtoonzoa.repository.RefreshTokenRepository;
 import com.project.webtoonzoa.repository.UserRecentPasswordRepository;
 import com.project.webtoonzoa.repository.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.constraints.Email;
 import java.io.IOException;
-import java.sql.Ref;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -163,9 +161,10 @@ public class UserService {
     }
 
     private void validateEmail(String email) {
-        if(userRepository.findByEmail(email).isPresent()){
+        if (userRepository.findByEmail(email).isPresent()) {
             throw new EmailExistenceException("중복된 이메일이 존재합니다!");
-        };
+        }
+        ;
     }
 
     private User getUserById(Long userId) {

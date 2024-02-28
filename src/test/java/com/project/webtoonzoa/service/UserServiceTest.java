@@ -26,10 +26,8 @@ import com.project.webtoonzoa.repository.RefreshTokenRepository;
 import com.project.webtoonzoa.repository.UserRecentPasswordRepository;
 import com.project.webtoonzoa.repository.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
-import java.awt.Image;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -98,7 +96,7 @@ class UserServiceTest {
             //given
             given(userRepository.save(any(User.class))).willReturn(user);
             //when
-            Long id = userService.createUser(signUpRequestDto,multipartFile);
+            Long id = userService.createUser(signUpRequestDto, multipartFile);
             //then
             assertEquals(user.getId(), id, "id가 같지 않습니다.");
 
@@ -111,7 +109,7 @@ class UserServiceTest {
             given(userRepository.findByEmail(anyString())).willReturn(Optional.of(user));
             //when + then
             assertThrows(EmailExistenceException.class, () -> {
-                userService.createUser(signUpRequestDto,multipartFile);
+                userService.createUser(signUpRequestDto, multipartFile);
             });
         }
 
@@ -127,12 +125,13 @@ class UserServiceTest {
         User user1;
         User user2;
         List<User> users;
+
         @BeforeEach
         public void setUp() {
             adminUser = new User();
-            ReflectionTestUtils.setField(adminUser,"role",UserRoleEnum.ADMIN);
+            ReflectionTestUtils.setField(adminUser, "role", UserRoleEnum.ADMIN);
             user1 = new User();
-            ReflectionTestUtils.setField(user1,"role",UserRoleEnum.USER);
+            ReflectionTestUtils.setField(user1, "role", UserRoleEnum.USER);
             user2 = new User();
             users = new ArrayList<>();
             users.add(user1);

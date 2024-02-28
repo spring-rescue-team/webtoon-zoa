@@ -41,7 +41,7 @@ public class User extends TimeStamped {
 
     private String imagePath;
 
-    public void updateImagePath(String imagePath){
+    public void updateImagePath(String imagePath) {
         this.imagePath = imagePath;
     }
 
