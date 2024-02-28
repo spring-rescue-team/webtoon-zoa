@@ -14,17 +14,23 @@ import com.project.webtoonzoa.dto.user.SignUpRequestDto;
 import com.project.webtoonzoa.dto.user.UserInfoRequestDto;
 import com.project.webtoonzoa.dto.user.UserInfoResponseDto;
 import com.project.webtoonzoa.dto.user.UserPasswordRequestDto;
+import com.project.webtoonzoa.dto.user.UserResponseDto;
 import com.project.webtoonzoa.entity.Enum.UserRoleEnum;
 import com.project.webtoonzoa.entity.RefreshToken;
 import com.project.webtoonzoa.entity.User;
 import com.project.webtoonzoa.global.exception.EmailExistenceException;
+import com.project.webtoonzoa.global.exception.IsNotAdminUser;
 import com.project.webtoonzoa.global.exception.PasswordNotConfirmException;
 import com.project.webtoonzoa.global.exception.PasswordNotEqualException;
 import com.project.webtoonzoa.repository.RefreshTokenRepository;
 import com.project.webtoonzoa.repository.UserRecentPasswordRepository;
 import com.project.webtoonzoa.repository.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpServletResponseWrapper;
+import java.awt.Image;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -36,6 +42,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
@@ -45,6 +52,9 @@ class UserServiceTest {
 
     @Mock
     PasswordEncoder passwordEncoder;
+
+    @Mock
+    ImageService imageService;
 
     @Mock
     UserRecentPasswordRepository userRecentPasswordRepository;
@@ -64,6 +74,7 @@ class UserServiceTest {
 
         User user;
         SignUpRequestDto signUpRequestDto;
+        MultipartFile multipartFile;
 
         @BeforeEach
         void setUp() {
@@ -83,11 +94,11 @@ class UserServiceTest {
 
         @Test
         @DisplayName("회원가입 성공")
-        void 회원가입_성공() {
+        void 회원가입_성공() throws IOException {
             //given
             given(userRepository.save(any(User.class))).willReturn(user);
             //when
-            Long id = userService.createUser(signUpRequestDto);
+            Long id = userService.createUser(signUpRequestDto,multipartFile);
             //then
             assertEquals(user.getId(), id, "id가 같지 않습니다.");
 
@@ -100,11 +111,53 @@ class UserServiceTest {
             given(userRepository.findByEmail(anyString())).willReturn(Optional.of(user));
             //when + then
             assertThrows(EmailExistenceException.class, () -> {
-                userService.createUser(signUpRequestDto);
+                userService.createUser(signUpRequestDto,multipartFile);
             });
         }
 
 
+    }
+
+    @Nested
+    @DisplayName("회원 전체 조회")
+    class getUsers {
+
+        User adminUser;
+
+        User user1;
+        User user2;
+        List<User> users;
+        @BeforeEach
+        public void setUp() {
+            adminUser = new User();
+            ReflectionTestUtils.setField(adminUser,"role",UserRoleEnum.ADMIN);
+            user1 = new User();
+            ReflectionTestUtils.setField(user1,"role",UserRoleEnum.USER);
+            user2 = new User();
+            users = new ArrayList<>();
+            users.add(user1);
+            users.add(user2);
+        }
+
+        @Test
+        @DisplayName("회원 전체 조회 성공")
+        public void 회원_전체조회_성공() throws Exception {
+            //given
+            given(userRepository.findAll()).willReturn(users);
+            //when
+            List<UserResponseDto> responseDtoList = userService.getUsers(adminUser);
+            //then
+            assertEquals(users.size(), responseDtoList.size());
+        }
+
+        @Test
+        @DisplayName("회원 전체 조회 실패")
+        public void 회원_전체조회_실패() throws Exception {
+            //when + then
+            assertThrows(IsNotAdminUser.class, () -> {
+                userService.getUsers(user1);
+            });
+        }
     }
 
     @Nested
@@ -174,7 +227,8 @@ class UserServiceTest {
                 //when
                 userService.updatePassword(userPasswordRequestDto, user);
                 //then
-                then(userRecentPasswordRepository).should().findAllByUserIdOrderByCreatedAtDesc(user.getId());
+                then(userRecentPasswordRepository).should()
+                    .findAllByUserIdOrderByCreatedAtDesc(user.getId());
             }
 
             @Test
@@ -224,7 +278,7 @@ class UserServiceTest {
             //when
             userService.logoutUser(httpServletResponse, user);
             //then
-            verify(refreshTokenRepository,times(1)).delete(refreshToken);
+            verify(refreshTokenRepository, times(1)).delete(refreshToken);
         }
     }
 }

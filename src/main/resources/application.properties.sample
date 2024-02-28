@@ -12,3 +12,12 @@ spring.jpa.properties.hibernate.use_sql_comments=true
 jwt.secret.key=dGhyZWV0aHJlZXRocmVldGhyZWV0aHJlZXRocmVldGhyZWU=
 
 admin.token=AAABnvxRVklrnYxKZ0aHgTBcXukeZygoCasewfsdf
+
+# aws s3 config
+cloud.aws.region.static=ap-northeast-2
+cloud.aws.stack.auto-=false
+
+# aws s3 key
+cloud.aws.s3.credentials.accessKey={accessKey}
+cloud.aws.s3.credentials.secretKey={secretKey}
+cloud.aws.s3.bucket={bucket-name}

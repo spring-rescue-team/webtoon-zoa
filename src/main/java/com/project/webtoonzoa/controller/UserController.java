@@ -12,6 +12,7 @@ import com.project.webtoonzoa.global.util.UserDetailsImpl;
 import com.project.webtoonzoa.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
@@ -26,7 +27,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -36,9 +39,10 @@ public class UserController {
 
     @PostMapping("/users/signup")
     public ResponseEntity<CommonResponse<?>> createUser(
-        @Valid @RequestBody SignUpRequestDto userRequestDto,
+        @Valid @RequestPart SignUpRequestDto userRequestDto,
+        @RequestPart(required = false) MultipartFile imageFile,
         BindingResult bindingResult
-    ) {
+    ) throws IOException {
         if (bindingResult.hasErrors()) {
             return validateRequestDto(
                 bindingResult,
@@ -49,7 +53,7 @@ public class UserController {
             CommonResponse.<Long>builder()
                 .status(HttpStatus.CREATED.value())
                 .message("회원가입이 성공하였습니다.")
-                .data(userService.createUser(userRequestDto))
+                .data(userService.createUser(userRequestDto,imageFile))
                 .build()
         );
     }
@@ -124,7 +128,7 @@ public class UserController {
     ){
         return ResponseEntity.status(HttpStatus.OK.value()).body(
             CommonResponse.<List<UserResponseDto>>builder()
-                .message("회원이 조회되었습니다.")
+                .message("회원목록이 조회되었습니다.")
                 .status(HttpStatus.OK.value())
                 .data(userService.getUsers(userDetails.getUser()))
                 .build()

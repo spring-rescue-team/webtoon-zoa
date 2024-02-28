@@ -22,6 +22,7 @@ import com.project.webtoonzoa.repository.UserRecentPasswordRepository;
 import com.project.webtoonzoa.repository.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.Email;
+import java.io.IOException;
 import java.sql.Ref;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -39,33 +41,31 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRecentPasswordRepository userRecentPasswordRepository;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final ImageService imageService;
 
     @Value("${admin.token}")
     private String ADMIN_TOKEN;
 
     @Transactional
-    public Long createUser(SignUpRequestDto userRequestDto) {
+    public Long createUser(SignUpRequestDto userRequestDto, MultipartFile imageFile)
+        throws IOException {
         String email = userRequestDto.getEmail();
+        validateEmail(email);
         String password = passwordEncoder.encode(userRequestDto.getPassword());
         String nickname = userRequestDto.getNickname();
         UserRoleEnum role = UserRoleEnum.USER;
         role = validateAdminToken(userRequestDto, role);
-        validateEmail(email);
+        String imageUrl = imageService.createImageName(imageFile);
         User user = User.builder()
             .email(email)
             .nickname(nickname)
             .password(password)
+            .imagePath(imageUrl)
             .role(role)
             .build();
         User saveUser = userRepository.save(user);
         saveRecentPassword(saveUser, password);
         return saveUser.getId();
-    }
-
-    private void validateEmail(String email) {
-        if(userRepository.findByEmail(email).isPresent()){
-            throw new EmailExistenceException("중복된 이메일이 존재합니다!");
-        };
     }
 
     private UserRoleEnum validateAdminToken(SignUpRequestDto userRequestDto, UserRoleEnum role) {
@@ -82,6 +82,12 @@ public class UserService {
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, null);
         RefreshToken refreshToken = refreshTokenRepository.findByUserId(user.getId());
         refreshTokenRepository.delete(refreshToken);
+    }
+
+    public List<UserResponseDto> getUsers(User user) {
+        validateAdmin(user);
+        List<User> users = userRepository.findAll();
+        return users.stream().map(UserResponseDto::new).toList();
     }
 
     @Transactional
@@ -125,6 +131,16 @@ public class UserService {
         userRecentPasswordRepository.save(userRecentPassword);
     }
 
+    @Transactional
+    public UserBannedResponseDto banUser(Long userId, User user) {
+        validateAdmin(user);
+        User savedUser = getUserById(userId);
+        savedUser.updateBanned();
+        Long savedUserId = savedUser.getId();
+        boolean banned = savedUser.isBanned();
+        return new UserBannedResponseDto(savedUserId, banned);
+    }
+
     private void validatePasswordByRecentPassword(String password,
         List<UserRecentPassword> userRecentPasswords) {
         for (UserRecentPassword userRecentPassword : userRecentPasswords) {
@@ -146,25 +162,15 @@ public class UserService {
         }
     }
 
-    @Transactional
-    public UserBannedResponseDto banUser(Long userId, User user) {
-        validateAdmin(user);
-        User savedUser = getUserById(userId);
-        savedUser.updateBanned();
-        Long savedUserId = savedUser.getId();
-        boolean banned = savedUser.isBanned();
-        return new UserBannedResponseDto(savedUserId, banned);
+    private void validateEmail(String email) {
+        if(userRepository.findByEmail(email).isPresent()){
+            throw new EmailExistenceException("중복된 이메일이 존재합니다!");
+        };
     }
 
     private User getUserById(Long userId) {
         return userRepository.findById(userId)
             .orElseThrow(() -> new UserNotExistence("존재하지 않는 회원입니다."));
-    }
-
-    public List<UserResponseDto> getUsers(User user) {
-        validateAdmin(user);
-        List<User> users = userRepository.findAll();
-        return users.stream().map(UserResponseDto::new).toList();
     }
 
     private void validateAdmin(User user) {
