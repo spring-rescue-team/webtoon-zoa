@@ -28,10 +28,10 @@ public class WebtoonService {
     private final UserRepository userRepository;
 
     @Transactional
-    public WebtoonResponseDto createWebtoon(User user, WebtoonRequestDto requestDto) {
+    public Long createWebtoon(User user, WebtoonRequestDto requestDto) {
         checkRole(user);
         Webtoon savedWebtoon = webtoonRepository.save(new Webtoon(requestDto));
-        return new WebtoonResponseDto(savedWebtoon);
+        return savedWebtoon.getId();
     }
 
     public List<WebtoonResponseDto> findAllWebtoon() {

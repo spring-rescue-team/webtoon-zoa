@@ -102,16 +102,10 @@ class WebtoonServiceTest {
             given(webtoonRepository.save(any(Webtoon.class))).willReturn(webtoon);
 
             // when
-            WebtoonResponseDto savedWebtoon = webtoonService.createWebtoon(user, requestDto);
+            Long savedWebtoon = webtoonService.createWebtoon(user, requestDto);
 
             // then
             assertEquals(webtoon.getId(), webtoonId, "ID가 다릅니다");
-            assertEquals(requestDto.getTitle(), savedWebtoon.getTitle(), "title 이 다릅니다");
-            assertEquals(requestDto.getDescription(), savedWebtoon.getDescription(),
-                "description 이 다릅니다");
-            assertEquals(requestDto.getCategory(), savedWebtoon.getCategory(), "category 가 다릅니다");
-            assertEquals(requestDto.getAuthor(), savedWebtoon.getAuthor(), "author 가 다릅니다");
-            assertEquals(requestDto.getDay(), savedWebtoon.getDay(), "day 가 다릅니다");
         }
     }
 
