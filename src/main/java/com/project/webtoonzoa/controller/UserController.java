@@ -15,7 +15,6 @@ import jakarta.validation.Valid;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,10 +38,11 @@ public class UserController {
 
     @PostMapping("/users/signup")
     public ResponseEntity<CommonResponse<?>> createUser(
-        @Valid @RequestPart SignUpRequestDto userRequestDto,
-        @RequestPart(required = false) MultipartFile imageFile,
-        BindingResult bindingResult
+        @Valid @RequestPart("userRequestDto") SignUpRequestDto userRequestDto,
+        BindingResult bindingResult,
+        @RequestPart(value = "file", required = false) MultipartFile imageFile
     ) throws IOException {
+        System.out.println(bindingResult);
         if (bindingResult.hasErrors()) {
             return validateRequestDto(
                 bindingResult,
@@ -53,7 +53,7 @@ public class UserController {
             CommonResponse.<Long>builder()
                 .status(HttpStatus.CREATED.value())
                 .message("회원가입이 성공하였습니다.")
-                .data(userService.createUser(userRequestDto,imageFile))
+                .data(userService.createUser(userRequestDto, imageFile))
                 .build()
         );
     }
@@ -125,7 +125,7 @@ public class UserController {
     @GetMapping("/users")
     public ResponseEntity<CommonResponse<List<UserResponseDto>>> getUser(
         @AuthenticationPrincipal UserDetailsImpl userDetails
-    ){
+    ) {
         return ResponseEntity.status(HttpStatus.OK.value()).body(
             CommonResponse.<List<UserResponseDto>>builder()
                 .message("회원목록이 조회되었습니다.")

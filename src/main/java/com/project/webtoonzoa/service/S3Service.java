@@ -12,6 +12,7 @@ import java.util.Date;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 @Service
 public class S3Service {
+
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
@@ -29,6 +31,7 @@ public class S3Service {
         // 메타데이터 생성
         ObjectMetadata objMeta = new ObjectMetadata();
         objMeta.setContentLength(multipartFile.getInputStream().available());
+        objMeta.setContentType(MediaType.IMAGE_JPEG_VALUE);
         // putObject(버킷명, 파일명, 파일데이터, 메타데이터)로 S3에 객체 등록
         amazonS3.putObject(bucket, s3FileName, multipartFile.getInputStream(), objMeta);
         // 등록된 객체의 url 반환 (decoder: url 안의 한글or특수문자 깨짐 방지)
@@ -36,7 +39,7 @@ public class S3Service {
     }
 
     /* 2. 파일 삭제 */
-    public void delete (String keyName) {
+    public void delete(String keyName) {
         try {
             // deleteObject(버킷명, 키값)으로 객체 삭제
             amazonS3.deleteObject(bucket, keyName);
@@ -46,7 +49,7 @@ public class S3Service {
     }
 
     /* 3. 파일의 preSigned URL 반환 */
-    public String getPreSignedURL (String keyName) {
+    public String getPreSignedURL(String keyName) {
         String preSignedURL = "";
         // preSigned URL이 유효하게 동작할 만료기한 설정 (2분)
         Date expiration = new Date();
@@ -56,7 +59,8 @@ public class S3Service {
 
         try {
             // presigned URL 발급
-            GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest(bucket, keyName)
+            GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest(
+                bucket, keyName)
                 .withMethod(HttpMethod.GET)
                 .withExpiration(expiration);
             URL url = amazonS3.generatePresignedUrl(generatePresignedUrlRequest);
