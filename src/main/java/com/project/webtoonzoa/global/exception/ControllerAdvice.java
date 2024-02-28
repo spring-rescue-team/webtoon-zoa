@@ -1,11 +1,11 @@
 package com.project.webtoonzoa.global.exception;
 
 import com.project.webtoonzoa.global.response.CommonResponse;
-import java.nio.file.AccessDeniedException;
 import java.util.NoSuchElementException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -38,9 +38,10 @@ public class ControllerAdvice {
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<CommonResponse<String>> handleAccessDeniedException(
+    public ResponseEntity<CommonResponse<String>> handleValidationAccessDeniedException(
         AccessDeniedException e) {
         log.error("접근 권한 불일치 에러", e);
+
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
             CommonResponse.<String>builder()
                 .message(e.getMessage())
@@ -57,6 +58,19 @@ public class ControllerAdvice {
             CommonResponse.<String>builder()
                 .message(e.getMessage())
                 .status(HttpStatus.NOT_FOUND.value())
+                .build()
+        );
+    }
+
+    @ExceptionHandler(LikeNotEqualException.class)
+    public ResponseEntity<CommonResponse<String>> handleValidationException(
+        LikeNotEqualException e) {
+        log.error("DB와 웹툰 좋아요 결과값 불일치", e);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+            CommonResponse.<String>builder()
+                .message(e.getMessage())
+                .status(HttpStatus.BAD_REQUEST.value())
                 .build()
         );
     }

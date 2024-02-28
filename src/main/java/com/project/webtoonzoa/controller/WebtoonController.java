@@ -28,16 +28,17 @@ public class WebtoonController {
     private final WebtoonService webtoonService;
 
     @PostMapping
-    public ResponseEntity<CommonResponse<WebtoonResponseDto>> createWebtoon(
+    public ResponseEntity<CommonResponse<Long>> createWebtoon(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @RequestBody WebtoonRequestDto requestDto) {
 
-        webtoonService.createWebtoon(userDetails.getUser(), requestDto);
+        Long createWebtoonId = webtoonService.createWebtoon(userDetails.getUser(), requestDto);
 
         return ResponseEntity.status(HttpStatus.CREATED.value()).body(
-            CommonResponse.<WebtoonResponseDto>builder()
+            CommonResponse.<Long>builder()
                 .status(HttpStatus.CREATED.value())
                 .message("웹툰이 게시 되었습니다")
+                .data(createWebtoonId)
                 .build()
         );
     }
@@ -71,6 +72,20 @@ public class WebtoonController {
         );
     }
 
+    @GetMapping("/top5")
+    public ResponseEntity<CommonResponse<List<WebtoonResponseDto>>> findTop5PopularWebtoons() {
+        List<WebtoonResponseDto> webtoonResponseDtoList = webtoonService.findTop5PopularWebtoons();
+
+        return ResponseEntity.status(HttpStatus.OK.value()).body(
+            CommonResponse.<List<WebtoonResponseDto>>builder()
+                .status(HttpStatus.OK.value())
+                .message("상위 5개의 인기 웹툰 조회 성공")
+                .data(webtoonResponseDtoList)
+                .build()
+        );
+    }
+
+
     @PutMapping("/{webtoonId}")
     public ResponseEntity<CommonResponse<WebtoonResponseDto>> updateWebtoon(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -89,20 +104,19 @@ public class WebtoonController {
         );
     }
 
-
     @DeleteMapping("/{webtoonId}")
     public ResponseEntity<CommonResponse<Long>> deleteWebtoon(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @PathVariable Long webtoonId) {
 
-        Long responseDto = webtoonService.deleteWebtoon(userDetails.getUser(),
+        Long deletedWebtoonId = webtoonService.deleteWebtoon(userDetails.getUser(),
             webtoonId);
 
         return ResponseEntity.status(HttpStatus.OK.value()).body(
             CommonResponse.<Long>builder()
                 .status(HttpStatus.OK.value())
                 .message("웹툰 삭제 성공")
-                .data(responseDto)
+                .data(deletedWebtoonId)
                 .build()
         );
     }
