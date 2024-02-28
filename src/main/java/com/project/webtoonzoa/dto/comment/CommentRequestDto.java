@@ -13,5 +13,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class CommentRequestDto {
 
+    private Long parentId;
     private String content;
 }

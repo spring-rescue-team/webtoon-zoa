@@ -1,11 +1,15 @@
 package com.project.webtoonzoa.dto.comment;
 
 import com.project.webtoonzoa.entity.Comment;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor
 public class CommentDetailResponseDto {
@@ -14,13 +18,7 @@ public class CommentDetailResponseDto {
     private Long userId;
     private Long webtoonId;
     private String content;
-
-    public CommentDetailResponseDto(Comment savedComment, Long userId, Long webtoonId) {
-        this.id = savedComment.getId();
-        this.userId = userId;
-        this.webtoonId = webtoonId;
-        this.content = savedComment.getContent();
-    }
+    private List<CommentDetailResponseDto> children = new ArrayList<>();
 
     public CommentDetailResponseDto(Comment comment) {
         this.id = comment.getId();
