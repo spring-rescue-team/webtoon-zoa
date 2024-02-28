@@ -37,6 +37,18 @@ public class User extends TimeStamped {
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
 
+    private boolean banned;
+
+    private String imagePath;
+
+    public void updateImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
+    public void updateBanned() {
+        this.banned = !banned;
+    }
+
     public void updatedNickname(String nickname) {
         this.nickname = nickname;
     }
