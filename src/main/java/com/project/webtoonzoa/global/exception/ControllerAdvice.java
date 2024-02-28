@@ -61,4 +61,17 @@ public class ControllerAdvice {
                 .build()
         );
     }
+
+    @ExceptionHandler(LikeNotEqualException.class)
+    public ResponseEntity<CommonResponse<String>> handleValidationException(
+        LikeNotEqualException e) {
+        log.error("DB와 웹툰 좋아요 결과값 불일치", e);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+            CommonResponse.<String>builder()
+                .message(e.getMessage())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .build()
+        );
+    }
 }

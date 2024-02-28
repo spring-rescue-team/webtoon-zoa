@@ -3,7 +3,6 @@ package com.project.webtoonzoa.controller;
 import com.project.webtoonzoa.dto.webtoon.WebtoonLikesResponseDto;
 import com.project.webtoonzoa.dto.webtoon.WebtoonRequestDto;
 import com.project.webtoonzoa.dto.webtoon.WebtoonResponseDto;
-import com.project.webtoonzoa.dto.webtoon.WebtoonTop5ResponseDto;
 import com.project.webtoonzoa.global.response.CommonResponse;
 import com.project.webtoonzoa.global.util.UserDetailsImpl;
 import com.project.webtoonzoa.service.WebtoonService;
@@ -73,14 +72,14 @@ public class WebtoonController {
     }
 
     @GetMapping("/top5")
-    public ResponseEntity<CommonResponse<List<WebtoonTop5ResponseDto>>> findTop5PopularWebtoons() {
-        List<WebtoonTop5ResponseDto> webtoonTop5ResponseDtoList = webtoonService.findTop5PopularWebtoons();
+    public ResponseEntity<CommonResponse<List<WebtoonResponseDto>>> findTop5PopularWebtoons() {
+        List<WebtoonResponseDto> webtoonResponseDtoList = webtoonService.findTop5PopularWebtoons();
 
         return ResponseEntity.status(HttpStatus.OK.value()).body(
-            CommonResponse.<List<WebtoonTop5ResponseDto>>builder()
+            CommonResponse.<List<WebtoonResponseDto>>builder()
                 .status(HttpStatus.OK.value())
                 .message("상위 5개의 인기 웹툰 조회 성공")
-                .data(webtoonTop5ResponseDtoList)
+                .data(webtoonResponseDtoList)
                 .build()
         );
     }

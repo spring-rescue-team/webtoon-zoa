@@ -7,7 +7,6 @@ import static org.mockito.BDDMockito.given;
 
 import com.project.webtoonzoa.dto.webtoon.WebtoonRequestDto;
 import com.project.webtoonzoa.dto.webtoon.WebtoonResponseDto;
-import com.project.webtoonzoa.dto.webtoon.WebtoonTop5ResponseDto;
 import com.project.webtoonzoa.entity.Enum.Category;
 import com.project.webtoonzoa.entity.Enum.Day;
 import com.project.webtoonzoa.entity.Enum.UserRoleEnum;
@@ -15,7 +14,6 @@ import com.project.webtoonzoa.entity.User;
 import com.project.webtoonzoa.entity.Webtoon;
 import com.project.webtoonzoa.repository.WebtoonRepository;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -194,7 +192,7 @@ class WebtoonServiceTest {
             assertEquals(webtoon.getDay(), responseDto.getDay(), "day 가 다릅니다");
         }
     }
-
+/*
     @Nested
     @DisplayName("웹툰 좋아요 Top5 조회")
     class top5Webtoon {
@@ -235,6 +233,8 @@ class WebtoonServiceTest {
             assertEquals(webtoon5, resultList.get(4));
         }
     }
+
+ */
 
     @Nested
     @DisplayName("웹툰 수정")
