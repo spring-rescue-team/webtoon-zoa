@@ -3,7 +3,6 @@ package com.project.webtoonzoa.service;
 import com.project.webtoonzoa.dto.webtoon.WebtoonLikesResponseDto;
 import com.project.webtoonzoa.dto.webtoon.WebtoonRequestDto;
 import com.project.webtoonzoa.dto.webtoon.WebtoonResponseDto;
-import com.project.webtoonzoa.dto.webtoon.WebtoonTop5ResponseDto;
 import com.project.webtoonzoa.entity.Enum.UserRoleEnum;
 import com.project.webtoonzoa.entity.User;
 import com.project.webtoonzoa.entity.Webtoon;
@@ -47,10 +46,6 @@ public class WebtoonService {
     public WebtoonResponseDto readWebtoon(Long webtoonId) {
         Webtoon webtoon = findWebtoon(webtoonId);
         return new WebtoonResponseDto(webtoon);
-    }
-
-    public List<WebtoonTop5ResponseDto> findTop5PopularWebtoons() {
-        return webtoonRepository.findTop5ByOrderByWebtoonLikesDesc();
     }
 
     @Transactional
@@ -97,11 +92,16 @@ public class WebtoonService {
     public WebtoonLikesResponseDto createWebtoonLikes(User user, Long webtoonId) {
         User savedUser = checkExistUser(user);
         Webtoon savedWebtoon = findWebtoon(webtoonId);
+
         if (webtoonLikesRepository.existsByUserAndWebtoon(savedUser, savedWebtoon)) {
             throw new DataIntegrityViolationException("이미 웹툰에 좋아요를 했습니다.");
         }
+
+        savedWebtoon.increaseLikes();
         WebtoonLikes savedWebtoonLikes = webtoonLikesRepository.save(
             new WebtoonLikes(savedUser, savedWebtoon));
+        checkLikeCount(savedWebtoon);
+
         return new WebtoonLikesResponseDto(savedWebtoonLikes);
     }
 
@@ -110,12 +110,30 @@ public class WebtoonService {
         User savedUser = checkExistUser(user);
         Webtoon savedWebtoon = findWebtoon(webtoonId);
         WebtoonLikes savedWebtoonLikes = checkExistWebtoonLikes(webtoonId);
+
         if (!webtoonLikesRepository.existsByUserAndWebtoon(savedUser, savedWebtoon)) {
             throw new NoSuchElementException("해당 댓글 좋아요가 존재하지 않습니다.");
         }
+
+        savedWebtoon.decreaseLikes();
         webtoonLikesRepository.delete(new WebtoonLikes(savedUser, savedWebtoon));
+        checkLikeCount(savedWebtoon);
 
         return new WebtoonLikesResponseDto(savedWebtoonLikes);
+    }
+
+    public List<WebtoonResponseDto> findTop5PopularWebtoons() {
+        List<Webtoon> top5List = webtoonRepository.findTop5ByOrderByLikesDesc();
+        return top5List.stream()
+            .map(WebtoonResponseDto::new)
+            .collect(Collectors.toList());
+    }
+
+    private void checkLikeCount(Webtoon webtoon){
+        Long dbLikes = webtoonRepository.countLikesByWebtoonId(webtoon.getId());
+        if(!webtoon.getLikes().equals(dbLikes)){
+            throw new IllegalStateException("DB와 웹툰의 좋아요 수가 다릅니다.");
+        }
     }
 
 }
