@@ -3,9 +3,7 @@ package com.project.webtoonzoa.dto.webtoon;
 import com.project.webtoonzoa.entity.Enum.Category;
 import com.project.webtoonzoa.entity.Enum.Day;
 import com.project.webtoonzoa.entity.Webtoon;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
 public class WebtoonResponseDto {

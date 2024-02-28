@@ -129,9 +129,9 @@ public class WebtoonService {
             .collect(Collectors.toList());
     }
 
-    private void checkLikeCount(Webtoon webtoon){
+    private void checkLikeCount(Webtoon webtoon) {
         Long dbLikes = webtoonRepository.countLikesByWebtoonId(webtoon.getId());
-        if(!webtoon.getLikes().equals(dbLikes)){
+        if (!webtoon.getLikes().equals(dbLikes)) {
             throw new IllegalStateException("DB와 웹툰의 좋아요 수가 다릅니다.");
         }
     }
