@@ -14,6 +14,7 @@ import com.project.webtoonzoa.entity.User;
 import com.project.webtoonzoa.entity.Webtoon;
 import com.project.webtoonzoa.repository.WebtoonRepository;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -132,6 +133,7 @@ class WebtoonServiceTest {
             ReflectionTestUtils.setField(webtoon, "category", Category.COMEDY);
             ReflectionTestUtils.setField(webtoon, "author", "test");
             ReflectionTestUtils.setField(webtoon, "day", Day.FRI);
+            ReflectionTestUtils.setField(webtoon, "likes", 100L);
             webtoonList.add(webtoon);
         }
 
@@ -139,7 +141,7 @@ class WebtoonServiceTest {
         @DisplayName("웹툰 전체 조회 성공")
         void successFindAll() {
             // given
-            given(webtoonRepository.findAll()).willReturn(webtoonList);
+            given(webtoonRepository.findAllByDeletedAtIsNull()).willReturn(webtoonList);
 
             // when
             webtoons = webtoonService.findAllWebtoon();
@@ -153,6 +155,7 @@ class WebtoonServiceTest {
             assertEquals(webtoon.getCategory(), webtoons.get(0).getCategory(), "category 가 다릅니다");
             assertEquals(webtoon.getAuthor(), webtoons.get(0).getAuthor(), "author 가 다릅니다");
             assertEquals(webtoon.getDay(), webtoons.get(0).getDay(), "day 가 다릅니다");
+            assertEquals(webtoon.getLikes(), webtoons.get(0).getLikes(), "likes 가 다릅니다");
         }
     }
 
@@ -172,6 +175,7 @@ class WebtoonServiceTest {
             ReflectionTestUtils.setField(webtoon, "category", Category.COMEDY);
             ReflectionTestUtils.setField(webtoon, "author", "test");
             ReflectionTestUtils.setField(webtoon, "day", Day.FRI);
+            ReflectionTestUtils.setField(webtoon, "likes", 100L);
         }
 
         @Test
@@ -190,51 +194,83 @@ class WebtoonServiceTest {
             assertEquals(webtoon.getCategory(), responseDto.getCategory(), "category 가 다릅니다");
             assertEquals(webtoon.getAuthor(), responseDto.getAuthor(), "author 가 다릅니다");
             assertEquals(webtoon.getDay(), responseDto.getDay(), "day 가 다릅니다");
+            assertEquals(webtoon.getLikes(), responseDto.getLikes(), "likes 가 다릅니다");
         }
     }
-/*
+
     @Nested
     @DisplayName("웹툰 좋아요 Top5 조회")
     class top5Webtoon {
-
-        List<WebtoonTop5ResponseDto> top5Webtoons;
-
-        WebtoonTop5ResponseDto webtoon1 = new WebtoonTop5ResponseDto(1L, "Webtoon 1",
-            "Description 1", Category.SF, "Author 1", Day.MON, 100L);
-        WebtoonTop5ResponseDto webtoon2 = new WebtoonTop5ResponseDto(2L, "Webtoon 2",
-            "Description 2", Category.FANTASY, "Author 2", Day.THU, 90L);
-        WebtoonTop5ResponseDto webtoon3 = new WebtoonTop5ResponseDto(3L, "Webtoon 3",
-            "Description 3", Category.HORROR, "Author 3", Day.WED, 80L);
-        WebtoonTop5ResponseDto webtoon4 = new WebtoonTop5ResponseDto(4L, "Webtoon 4",
-            "Description 4", Category.LOVECOMEDY, "Author 4", Day.THU, 70L);
-        WebtoonTop5ResponseDto webtoon5 = new WebtoonTop5ResponseDto(5L, "Webtoon 5",
-            "Description 5", Category.COMEDY, "Author 5", Day.FRI, 60L);
+        Webtoon webtoon1, webtoon2, webtoon3, webtoon4, webtoon5;
+        List<Webtoon> top5Webtoons = new ArrayList<>();
 
         @BeforeEach
         void setup() {
-            top5Webtoons = Arrays.asList(webtoon1, webtoon2, webtoon3, webtoon4, webtoon5);
+            Long webtoonId = 1L;
+            webtoon1 = new Webtoon();
+            ReflectionTestUtils.setField(webtoon1, "id", webtoonId);
+            ReflectionTestUtils.setField(webtoon1, "title", "title");
+            ReflectionTestUtils.setField(webtoon1, "description", "description");
+            ReflectionTestUtils.setField(webtoon1, "category", Category.COMEDY);
+            ReflectionTestUtils.setField(webtoon1, "author", "test");
+            ReflectionTestUtils.setField(webtoon1, "day", Day.FRI);
+            ReflectionTestUtils.setField(webtoon1, "likes", 100L);
+            top5Webtoons.add(webtoon1);
+
+            webtoon2 = new Webtoon();
+            ReflectionTestUtils.setField(webtoon2, "id", webtoonId);
+            ReflectionTestUtils.setField(webtoon2, "title", "title");
+            ReflectionTestUtils.setField(webtoon2, "description", "description");
+            ReflectionTestUtils.setField(webtoon2, "category", Category.COMEDY);
+            ReflectionTestUtils.setField(webtoon2, "author", "test");
+            ReflectionTestUtils.setField(webtoon2, "day", Day.FRI);
+            ReflectionTestUtils.setField(webtoon2, "likes", 90L);
+            top5Webtoons.add(webtoon2);
+
+            webtoon3 = new Webtoon();
+            ReflectionTestUtils.setField(webtoon3, "id", webtoonId);
+            ReflectionTestUtils.setField(webtoon3, "title", "title");
+            ReflectionTestUtils.setField(webtoon3, "description", "description");
+            ReflectionTestUtils.setField(webtoon3, "category", Category.COMEDY);
+            ReflectionTestUtils.setField(webtoon3, "author", "test");
+            ReflectionTestUtils.setField(webtoon3, "day", Day.FRI);
+            ReflectionTestUtils.setField(webtoon3, "likes", 80L);
+            top5Webtoons.add(webtoon3);
+
+            webtoon4 = new Webtoon();
+            ReflectionTestUtils.setField(webtoon4, "id", webtoonId);
+            ReflectionTestUtils.setField(webtoon4, "title", "title");
+            ReflectionTestUtils.setField(webtoon4, "description", "description");
+            ReflectionTestUtils.setField(webtoon4, "category", Category.COMEDY);
+            ReflectionTestUtils.setField(webtoon4, "author", "test");
+            ReflectionTestUtils.setField(webtoon4, "day", Day.FRI);
+            ReflectionTestUtils.setField(webtoon4, "likes", 70L);
+            top5Webtoons.add(webtoon4);
+
+            webtoon5 = new Webtoon();
+            ReflectionTestUtils.setField(webtoon5, "id", webtoonId);
+            ReflectionTestUtils.setField(webtoon5, "title", "title");
+            ReflectionTestUtils.setField(webtoon5, "description", "description");
+            ReflectionTestUtils.setField(webtoon5, "category", Category.COMEDY);
+            ReflectionTestUtils.setField(webtoon5, "author", "test");
+            ReflectionTestUtils.setField(webtoon5, "day", Day.FRI);
+            ReflectionTestUtils.setField(webtoon5, "likes", 60L);
+            top5Webtoons.add(webtoon5);
         }
 
         @Test
         @DisplayName("웹툰 Top5 조회 성공")
         void successTop5() {
             // given
-            given(webtoonRepository.findTop5ByOrderByWebtoonLikesDesc()).willReturn(top5Webtoons);
+            given(webtoonRepository.findTop5ByOrderByLikesDesc()).willReturn(top5Webtoons);
 
             // when
-            List<WebtoonTop5ResponseDto> resultList = webtoonService.findTop5PopularWebtoons();
+            List<WebtoonResponseDto> resultList = webtoonService.findTop5PopularWebtoons();
 
             // then
             assertEquals(5, resultList.size());
-            assertEquals(webtoon1, resultList.get(0));
-            assertEquals(webtoon2, resultList.get(1));
-            assertEquals(webtoon3, resultList.get(2));
-            assertEquals(webtoon4, resultList.get(3));
-            assertEquals(webtoon5, resultList.get(4));
         }
     }
-
- */
 
     @Nested
     @DisplayName("웹툰 수정")
