@@ -82,8 +82,8 @@ public class WebtoonService {
             () -> new NoSuchElementException("유저가 존재하지 않습니다."));
     }
 
-    private WebtoonLikes checkExistWebtoonLikes(Long webtoonLikesId) {
-        return webtoonLikesRepository.findById(webtoonLikesId).orElseThrow(
+    private WebtoonLikes checkExistWebtoonLikes(Long userId, Long webtoonLikesId) {
+        return webtoonLikesRepository.findByUserIdAndWebtoonId(userId, webtoonLikesId).orElseThrow(
             () -> new NoSuchElementException("해당 웹툰 좋아요가 존재하지 않습니다.")
         );
     }
@@ -97,10 +97,10 @@ public class WebtoonService {
             throw new DataIntegrityViolationException("이미 웹툰에 좋아요를 했습니다.");
         }
 
-        savedWebtoon.increaseLikes();
         WebtoonLikes savedWebtoonLikes = webtoonLikesRepository.save(
             new WebtoonLikes(savedUser, savedWebtoon));
-        checkLikeCount(savedWebtoon);
+        savedWebtoon.increaseLikes();
+        //checkLikeCount(savedWebtoon);
 
         return new WebtoonLikesResponseDto(savedWebtoonLikes);
     }
@@ -109,15 +109,15 @@ public class WebtoonService {
     public WebtoonLikesResponseDto deleteWebtoonLikes(User user, Long webtoonId) {
         User savedUser = checkExistUser(user);
         Webtoon savedWebtoon = findWebtoon(webtoonId);
-        WebtoonLikes savedWebtoonLikes = checkExistWebtoonLikes(webtoonId);
+        WebtoonLikes savedWebtoonLikes = checkExistWebtoonLikes(user.getId(), webtoonId);
 
         if (!webtoonLikesRepository.existsByUserAndWebtoon(savedUser, savedWebtoon)) {
-            throw new NoSuchElementException("해당 댓글 좋아요가 존재하지 않습니다.");
+            throw new NoSuchElementException("해당 웹툰 좋아요가 존재하지 않습니다.");
         }
 
-        savedWebtoon.decreaseLikes();
         webtoonLikesRepository.delete(new WebtoonLikes(savedUser, savedWebtoon));
-        checkLikeCount(savedWebtoon);
+        savedWebtoon.decreaseLikes();
+        //checkLikeCount(savedWebtoon);
 
         return new WebtoonLikesResponseDto(savedWebtoonLikes);
     }
@@ -128,12 +128,4 @@ public class WebtoonService {
             .map(WebtoonResponseDto::new)
             .collect(Collectors.toList());
     }
-
-    private void checkLikeCount(Webtoon webtoon) {
-        Long dbLikes = webtoonRepository.countLikesByWebtoonId(webtoon.getId());
-        if (!webtoon.getLikes().equals(dbLikes)) {
-            throw new IllegalStateException("DB와 웹툰의 좋아요 수가 다릅니다.");
-        }
-    }
-
 }
