@@ -39,7 +39,7 @@
 <div align=center><h1>📄 와이어 프레임</h1></div>
 
 <div align=center>
-  <img src="https://github.com/spring-rescue-team/webtoon-zoa/assets/65538799/fc6eb22e-3656-4395-bdb3-fa754d9fdcb4">
+  <img src="https://github.com/spring-rescue-team/webtoon-zoa/assets/65538799/54311de6-3110-47db-ac80-cdeb6ef6e1cc">
 </div>
 
 <br>
