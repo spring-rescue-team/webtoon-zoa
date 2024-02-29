@@ -58,7 +58,7 @@ class CommentServiceTest implements CommentTest {
     void readComment() {
         //given
         given(webtoonRepository.findById(TEST_WEBTOON_ID)).willReturn(Optional.of(TEST_WEBTOON));
-        given(commentRepository.findByWebtoonIdAndDeletedAtIsNullOrderByCreatedAtAsc(
+        given(commentRepository.findAllCommentByWebtoonId(
             TEST_WEBTOON_ID)).willReturn(List.of(TEST_COMMENT, TEST_COMMENT_2));
 
         //when
