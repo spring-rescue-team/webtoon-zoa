@@ -100,7 +100,6 @@ public class WebtoonService {
         WebtoonLikes savedWebtoonLikes = webtoonLikesRepository.save(
             new WebtoonLikes(savedUser, savedWebtoon));
         savedWebtoon.increaseLikes();
-        //checkLikeCount(savedWebtoon);
 
         return new WebtoonLikesResponseDto(savedWebtoonLikes);
     }
@@ -117,7 +116,6 @@ public class WebtoonService {
 
         webtoonLikesRepository.delete(new WebtoonLikes(savedUser, savedWebtoon));
         savedWebtoon.decreaseLikes();
-        //checkLikeCount(savedWebtoon);
 
         return new WebtoonLikesResponseDto(savedWebtoonLikes);
     }
